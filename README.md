@@ -12,6 +12,7 @@
 - `wwtp_decision/`：Safe-MARL、安全盾、奖励函数、动作解释等共享逻辑。
 - `dashboard/backend/`：FastAPI 接口，提供摘要、时序、推荐、推理和报告 API。
 - `configs/`：排放阈值、控制边界、外部数据源和 Safe-MARL 配置。
+- `docs/final_scoring_matrix.md`：按赛题 20/50/30/20 评分口径整理证据索引。
 
 ## 快速运行
 
@@ -56,6 +57,8 @@ python scripts/package_submission.py
 ```
 
 生成的作品包位于 `outputs/submission/wwtp_safe_marl_submission.zip`。原始大数据、PDF/Office 源材料、模型二进制和 `node_modules` 不进入压缩包。
+
+评审可先阅读 `docs/final_scoring_matrix.md`，再查看 `docs/competition_report.docx`、`docs/literature_basis_table.md` 和 Web 大屏。
 
 ## 已保留的轻量结果
 

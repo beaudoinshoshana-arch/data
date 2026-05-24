@@ -16,6 +16,7 @@
 | 可视化大屏 | `dashboard/frontend`，浏览器验证标题、KPI、3 个图表、推荐卡、AI 摘要存在 | 已满足 |
 | 系统对接适配 | `docs/system_integration_manual.md` 与 FastAPI 接口 | 已满足 |
 | 参考论文并创新 | 文献笔记、Water Research 复现、Safe-MARL/安全盾/融合场景库创新线 | 已满足 |
+| 评分项证据索引 | `docs/final_scoring_matrix.md` 按 20/50/30/20 评分项整理证据 | 已满足 |
 | 文档与用户指导 | README、部署说明、对接手册、演示脚本、参赛报告 MD/DOCX | 已满足 |
 | 作品打包 | `scripts/package_submission.py` 可生成不含原始大文件的提交包 | 已满足 |
 
@@ -28,6 +29,7 @@
 - 浏览器 DOM 检查：标题、KPI、图表 canvas、当前推荐、AI 摘要、WQP ok 均存在。
 - `docs/competition_report.docx`：ZIP 结构验证包含 `word/document.xml` 和 `[Content_Types].xml`。
 - `python scripts/package_submission.py`：生成作品提交 zip 和 manifest。
+- `git ls-remote --heads origin main`：远端 main 与本地最新提交一致。
 
 ## 交付边界
 

@@ -164,6 +164,14 @@ J = w_q R_{water} + w_e E_{aeration} + w_c C_{PAC} + w_s S_{smooth} + w_v V_{vio
 3. 约束安全盾把 RL 动作转化为可执行、可解释、可回退的工程建议。
 4. 结合 Water Research 实时控制论文的动态特征思想，形成小时级代理动态特征和在线控制展示。
 5. 大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。
+
+## 8. 评审索引
+
+- 评分项证据矩阵：docs/final_scoring_matrix.md。
+- 论文依据与创新对照表：docs/literature_basis_table.md。
+- 系统对接手册：docs/system_integration_manual.md。
+- 部署运行说明：docs/deployment_guide.md。
+- 演示脚本：docs/demo_script.md。
 `;
 
 fs.writeFileSync(path.join(docsDir, "competition_report.md"), markdown, "utf-8");
@@ -206,13 +214,19 @@ const children = [
   bullet("约束安全盾把 RL 动作转化为可执行、可解释、可回退的工程建议。"),
   bullet("结合实时智能控制论文的动态特征思想，形成小时级代理动态特征和在线控制展示。"),
   bullet("大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。"),
+  h1("8. 评审索引"),
+  bullet("评分项证据矩阵：docs/final_scoring_matrix.md。"),
+  bullet("论文依据与创新对照表：docs/literature_basis_table.md。"),
+  bullet("系统对接手册：docs/system_integration_manual.md。"),
+  bullet("部署运行说明：docs/deployment_guide.md。"),
+  bullet("演示脚本：docs/demo_script.md。"),
 ];
 
 const verifiedScreenshot = path.join(outputsDir, "dashboard_verified.png");
 const fallbackScreenshot = path.join(outputsDir, "dashboard_fullpage.png");
 const screenshot = fs.existsSync(verifiedScreenshot) ? verifiedScreenshot : fallbackScreenshot;
 if (fs.existsSync(screenshot)) {
-  children.push(h1("8. 可视化大屏截图"));
+  children.push(h1("9. 可视化大屏截图"));
   children.push(
     new Paragraph({
       alignment: AlignmentType.CENTER,

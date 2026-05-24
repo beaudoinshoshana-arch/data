@@ -34,6 +34,7 @@ mar-summer-repro/
 
 # Generated outputs: keep only lightweight summaries and demo tables.
 outputs/*
+!outputs/dashboard_verified.png
 !outputs/stage1_data/
 outputs/stage1_data/*
 !outputs/stage1_data/reports/
