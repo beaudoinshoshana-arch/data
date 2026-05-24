@@ -113,6 +113,7 @@ def dashboard_summary() -> dict[str, Any]:
     stage2 = read_json(ROOT / "outputs" / "stage2_model" / "summary.json", {})
     safe = read_json(ROOT / "outputs" / "safe_marl" / "summary.json", {})
     benefit = read_json(ROOT / "outputs" / "decision_benefit" / "decision_benefit_summary.json", {})
+    efficiency = read_json(ROOT / "outputs" / "model_efficiency" / "model_efficiency_summary.json", {})
     fusion = read_json(ROOT / "outputs" / "fusion_data" / "source_registry.json", {})
     paper = read_json(ROOT / "outputs" / "paper_repro_integrated_control" / "summary.json", {})
     rec = read_csv_cached(str(ROOT / "outputs" / "safe_marl" / "rl_recommendations_test.csv"))
@@ -137,6 +138,10 @@ def dashboard_summary() -> dict[str, Any]:
             "recommend_response_p95_ms": finite(benefit.get("response_time", {}).get("p95_ms")),
             "dynamic_energy_saving_pct": finite(paper.get("phase4_dynamic_replay", {}).get("dynamic_energy_saving_pct")),
             "dynamic_mean_execution_sec": finite(paper.get("phase4_dynamic_replay", {}).get("mean_control_execution_sec")),
+            "compact_feature_reduction_pct": finite(efficiency.get("best_compact_model", {}).get("feature_reduction_pct")),
+            "compact_speedup_vs_full": finite(efficiency.get("best_compact_model", {}).get("speedup_vs_full")),
+            "compact_serving_time_reduction_pct": finite(efficiency.get("best_compact_model", {}).get("serving_time_reduction_pct")),
+            "compact_mae_delta_vs_baseline": finite(efficiency.get("best_compact_model", {}).get("mae_delta_vs_baseline")),
         },
         "sources": fusion.get("sources", {}),
         "model": {
@@ -148,6 +153,7 @@ def dashboard_summary() -> dict[str, Any]:
             "safe_marl_by_scenario": safe.get("by_scenario", {}),
         },
         "evaluation": benefit,
+        "efficiency": efficiency,
         "latest_recommendation": latest[0] if latest else None,
         "reflection": safe.get("reflection", {}),
     }

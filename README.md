@@ -9,6 +9,7 @@
 - `scripts/build_external_fusion_dataset.py`：融合本地、国内公开监测、WQP/Kaggle 适配数据。
 - `scripts/train_safe_marl.py`：训练轻量 PyTorch 双智能体策略，并通过安全盾生成推荐。
 - `scripts/evaluate_decision_benefits.py`：评估节能药耗收益、复杂工况鲁棒性和单组响应时间。
+- `scripts/evaluate_model_energy_efficiency.py`：验证 EcoLite 轻量代理模型，量化特征裁剪、推理耗时和测试效果。
 - `wwtp_decision/`：Safe-MARL、安全盾、奖励函数、动作解释等共享逻辑。
 - `dashboard/backend/`：FastAPI 接口，提供摘要、时序、推荐、推理和报告 API。
 - `configs/`：排放阈值、控制边界、外部数据源和 Safe-MARL 配置。
@@ -46,6 +47,7 @@ python scripts/validate_stage1_outputs.py
 python scripts/build_external_fusion_dataset.py
 python scripts/train_safe_marl.py --epochs 40
 python scripts/evaluate_decision_benefits.py
+python scripts/evaluate_model_energy_efficiency.py
 pytest
 cd dashboard/frontend
 npm run build
@@ -71,4 +73,5 @@ python scripts/package_submission.py
 2. Safe-MARL：曝气智能体和加药智能体协同输出动作。
 3. 安全约束盾：所有 RL 动作经过设备边界、单次步长和合规风险检查。
 4. 可解释推荐：输出 reward 分解、节能药耗变化和中文动作解释。
-5. 工程闭环：保留监督代理模型、局部专家优化和论文复现结果作为对照。
+5. EcoLite 轻量代理：40 特征回放模型在当前测试中减少 88.54% 特征并降低 83.63% 推理耗时。
+6. 工程闭环：保留监督代理模型、局部专家优化和论文复现结果作为对照。

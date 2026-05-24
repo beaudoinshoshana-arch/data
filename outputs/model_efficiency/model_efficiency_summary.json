@@ -1,0 +1,230 @@
+{
+  "generated_at": "2026-05-24T22:44:50",
+  "method": "EcoLite compact surrogate replay",
+  "ranking_fit_sec": 5.916784600005485,
+  "baseline_model": {
+    "feature_count": 349,
+    "test_weighted_normalized_mae": 0.2409998853149044,
+    "predict_ms": 80.64800000283867
+  },
+  "best_compact_model": {
+    "top_k": 40,
+    "feature_reduction_pct": 88.53868194842407,
+    "weighted_normalized_mae": 0.2366706848659523,
+    "mae_delta_vs_baseline": -0.004329200448952103,
+    "predicted_compliance_rate": 1.0,
+    "predict_ms": 13.198999979067594,
+    "speedup_vs_full": 6.110159870500722,
+    "serving_time_reduction_pct": 83.63381611620497
+  },
+  "plant_energy_evidence": {
+    "energy_saving_vs_current_pct": 38.66545172174733,
+    "chemical_saving_vs_current_pct": 69.62756172463189,
+    "energy_saving_vs_fixed_pct": 44.984133872366606,
+    "chemical_saving_vs_fixed_pct": 88.96723569297644
+  },
+  "candidates": [
+    {
+      "top_k": 24,
+      "fit_sec": 1.1331087000435218,
+      "predict_ms": 15.162600029725581,
+      "weighted_normalized_mae": 0.2523932674044934,
+      "predicted_compliance_rate": 1.0,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.5046364594708651,
+          "rmse": 1.4104734893080406,
+          "r2": 0.4887914662610915,
+          "normalized_mae": 0.09657860815746284,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.14767548889138105,
+          "rmse": 0.23802113847222633,
+          "r2": 0.264999807067162,
+          "normalized_mae": 0.5056917760257204,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.008326145577397484,
+          "rmse": 0.020562652271011693,
+          "r2": 0.2503603835620646,
+          "normalized_mae": 0.22111824673903058,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.22277330387217037,
+          "rmse": 0.46252352040516354,
+          "r2": 0.7742436894603364,
+          "normalized_mae": 0.15106381595906143,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      }
+    },
+    {
+      "top_k": 40,
+      "fit_sec": 1.6563358000130393,
+      "predict_ms": 13.198999979067594,
+      "weighted_normalized_mae": 0.2366706848659523,
+      "predicted_compliance_rate": 1.0,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.51202388264038,
+          "rmse": 1.4467036124901287,
+          "r2": 0.46219185981639543,
+          "normalized_mae": 0.09799243197893236,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.1311431947037747,
+          "rmse": 0.21800437880602186,
+          "r2": 0.3834236953062744,
+          "normalized_mae": 0.44907950223355764,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.008323387858518428,
+          "rmse": 0.020678952802874562,
+          "r2": 0.2418566131373754,
+          "normalized_mae": 0.22104500973424035,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.2304506598149561,
+          "rmse": 0.47131188931824713,
+          "r2": 0.7655830318253527,
+          "normalized_mae": 0.15626987370940426,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      }
+    },
+    {
+      "top_k": 64,
+      "fit_sec": 2.528318400029093,
+      "predict_ms": 14.70179995521903,
+      "weighted_normalized_mae": 0.24828889711047597,
+      "predicted_compliance_rate": 1.0,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.5397974204995408,
+          "rmse": 1.4688696403113664,
+          "r2": 0.4455852848284906,
+          "normalized_mae": 0.10330780224143558,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.14146300869447334,
+          "rmse": 0.2322067486653937,
+          "r2": 0.300470438751573,
+          "normalized_mae": 0.4844181024602338,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.008199703203233983,
+          "rmse": 0.02072960296649923,
+          "r2": 0.23813813524862693,
+          "normalized_mae": 0.21776030448007563,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.22861410834409587,
+          "rmse": 0.4700379512569363,
+          "r2": 0.7668485594232654,
+          "normalized_mae": 0.15502449794592155,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      }
+    },
+    {
+      "top_k": 96,
+      "fit_sec": 3.5892351999646053,
+      "predict_ms": 14.947200019378215,
+      "weighted_normalized_mae": 0.2449281042133405,
+      "predicted_compliance_rate": 1.0,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.5478254154717624,
+          "rmse": 1.4477494744374775,
+          "r2": 0.46141398606591477,
+          "normalized_mae": 0.1048442203225335,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.13627946604795596,
+          "rmse": 0.22732935909844224,
+          "r2": 0.3295483685201308,
+          "normalized_mae": 0.4666678657303561,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.008375382592610496,
+          "rmse": 0.0207658425622801,
+          "r2": 0.23547202537137168,
+          "normalized_mae": 0.22242583887483458,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.23346512214539647,
+          "rmse": 0.47695992235472745,
+          "r2": 0.7599310296136648,
+          "normalized_mae": 0.15831399737586685,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      }
+    }
+  ],
+  "reflection": {
+    "result": "A compact 40-feature ExtraTrees surrogate preserved compliance and slightly improved test weighted normalized MAE while cutting prediction time.",
+    "risk": "The compact model is a replay validation artifact; it should be promoted only after full recommendation search regression tests.",
+    "improvement": "Use the compact feature set as an online-serving profile while retaining the full model for offline audit and retraining.",
+    "next_step": "Add a model-profile switch in the backend once the compact surrogate is persisted as a reviewed artifact."
+  }
+}

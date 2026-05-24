@@ -68,6 +68,12 @@ outputs/safe_marl/*
 !outputs/safe_marl/training_curve.csv
 !outputs/safe_marl/rl_recommendations_test.csv
 !outputs/safe_marl/model_card.md
+!outputs/model_efficiency/
+outputs/model_efficiency/*
+!outputs/model_efficiency/model_efficiency_summary.json
+!outputs/model_efficiency/model_efficiency_report.md
+!outputs/model_efficiency/compact_surrogate_candidates.csv
+!outputs/model_efficiency/compact_surrogate_features.json
 
 # Logs and local scratch
 *.log

@@ -31,6 +31,7 @@ type Summary = {
   evaluation?: {
     robustness?: Record<string, Record<string, number>>;
   };
+  efficiency?: EfficiencySummary;
   latest_recommendation: Recommendation | null;
   reflection: Record<string, string>;
 };
@@ -63,6 +64,31 @@ type Recommendation = {
   explanation: string;
 };
 
+type EfficiencySummary = {
+  method?: string;
+  baseline_model?: {
+    feature_count?: number;
+    test_weighted_normalized_mae?: number;
+    predict_ms?: number;
+  };
+  best_compact_model?: {
+    top_k?: number;
+    feature_reduction_pct?: number;
+    weighted_normalized_mae?: number;
+    mae_delta_vs_baseline?: number;
+    predicted_compliance_rate?: number;
+    predict_ms?: number;
+    speedup_vs_full?: number;
+    serving_time_reduction_pct?: number;
+  };
+  plant_energy_evidence?: {
+    energy_saving_vs_current_pct?: number;
+    chemical_saving_vs_current_pct?: number;
+    energy_saving_vs_fixed_pct?: number;
+    chemical_saving_vs_fixed_pct?: number;
+  };
+};
+
 type AiSummary = {
   title: string;
   bullets: string[];
@@ -72,6 +98,15 @@ type AiSummary = {
 };
 
 const API = "";
+const CHART_TEXT = "#52616b";
+const CHART_MUTED = "#82919c";
+const CHART_GRID = "#e1ebee";
+const CHART_AXIS = "#cbd9df";
+const TEAL = "#0f766e";
+const BLUE = "#2563eb";
+const AMBER = "#d97706";
+const GREEN = "#16a34a";
+const ROSE = "#e11d48";
 const METRICS = ["COD", "NH3N", "TP", "TN"] as const;
 const SCENARIOS = ["", "observed", "load_up", "rain_dilution"];
 const TARGET_ORDER = [
@@ -222,14 +257,14 @@ function App() {
     const x = predictionSeries.map((d) => d.timestamp?.slice(5, 16));
     return {
       tooltip: { trigger: "axis" },
-      legend: { top: 0, textStyle: { color: "#d6e4ec" } },
+      legend: { top: 0, textStyle: { color: CHART_TEXT } },
       grid: { left: 48, right: 24, top: 42, bottom: 34 },
-      xAxis: { type: "category", data: x, axisLabel: { color: "#8fb0be" }, axisLine: { lineStyle: { color: "#2b5261" } } },
-      yAxis: { type: "value", axisLabel: { color: "#8fb0be" }, splitLine: { lineStyle: { color: "#183641" } } },
+      xAxis: { type: "category", data: x, axisLabel: { color: CHART_MUTED }, axisLine: { lineStyle: { color: CHART_AXIS } } },
+      yAxis: { type: "value", axisLabel: { color: CHART_MUTED }, splitLine: { lineStyle: { color: CHART_GRID } } },
       series: [
-        { name: "实测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[actualKey || ""]), lineStyle: { color: "#58d5c9", width: 2 } },
-        { name: "预测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[predKey || ""]), lineStyle: { color: "#f6c85f", width: 2 } },
-        { name: "限值", type: "line", symbol: "none", data: predictionSeries.map((d) => d[limitKey || ""]), lineStyle: { color: "#e35f6f", type: "dashed", width: 1.5 } },
+        { name: "实测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[actualKey || ""]), lineStyle: { color: TEAL, width: 2 } },
+        { name: "预测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[predKey || ""]), lineStyle: { color: AMBER, width: 2 } },
+        { name: "限值", type: "line", symbol: "none", data: predictionSeries.map((d) => d[limitKey || ""]), lineStyle: { color: ROSE, type: "dashed", width: 1.5 } },
       ],
     };
   }, [predictionSeries]);
@@ -239,15 +274,15 @@ function App() {
     const x = aerationSeries.map((d) => d.timestamp?.slice(5, 16));
     return {
       tooltip: { trigger: "axis" },
-      legend: { top: 0, textStyle: { color: "#d6e4ec" } },
+      legend: { top: 0, textStyle: { color: CHART_TEXT } },
       grid: { left: 46, right: 24, top: 42, bottom: 34 },
-      xAxis: { type: "category", data: x, axisLabel: { color: "#8fb0be" }, axisLine: { lineStyle: { color: "#2b5261" } } },
-      yAxis: { type: "value", axisLabel: { color: "#8fb0be" }, splitLine: { lineStyle: { color: "#183641" } } },
+      xAxis: { type: "category", data: x, axisLabel: { color: CHART_MUTED }, axisLine: { lineStyle: { color: CHART_AXIS } } },
+      yAxis: { type: "value", axisLabel: { color: CHART_MUTED }, splitLine: { lineStyle: { color: CHART_GRID } } },
       series: [
-        { name: "基线曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.baseline_aeration_intensity_pct), lineStyle: { color: "#8fb0be", width: 1.5 } },
-        { name: "RL曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.recommended_aeration_intensity_pct), lineStyle: { color: "#56ccf2", width: 2.2 } },
-        { name: "基线药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.baseline_chemical_dose_kgph), lineStyle: { color: "#f2994a", width: 1.5 } },
-        { name: "RL药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.recommended_chemical_dose_kgph), lineStyle: { color: "#7ed957", width: 2.2 } },
+        { name: "基线曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.baseline_aeration_intensity_pct), lineStyle: { color: "#94a3b8", width: 1.5 } },
+        { name: "RL曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.recommended_aeration_intensity_pct), lineStyle: { color: BLUE, width: 2.2 } },
+        { name: "基线药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.baseline_chemical_dose_kgph), lineStyle: { color: AMBER, width: 1.5 } },
+        { name: "RL药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.recommended_chemical_dose_kgph), lineStyle: { color: GREEN, width: 2.2 } },
       ],
     };
   }, [aerationSeries, pacSeries]);
@@ -265,9 +300,9 @@ function App() {
           { name: "平滑", max: 1 },
           { name: "违规", max: 1 },
         ],
-        axisName: { color: "#cfe2eb" },
-        splitLine: { lineStyle: { color: "#244c5a" } },
-        splitArea: { areaStyle: { color: ["rgba(16,42,52,.4)", "rgba(23,59,70,.4)"] } },
+        axisName: { color: CHART_TEXT },
+        splitLine: { lineStyle: { color: CHART_GRID } },
+        splitArea: { areaStyle: { color: ["rgba(236,248,247,.88)", "rgba(248,252,252,.9)"] } },
       },
       series: [
         {
@@ -282,8 +317,8 @@ function App() {
                 latest.reward_smoothness_term,
                 latest.constraint_violation,
               ],
-              areaStyle: { color: "rgba(88,213,201,.26)" },
-              lineStyle: { color: "#58d5c9", width: 2 },
+              areaStyle: { color: "rgba(15,118,110,.16)" },
+              lineStyle: { color: TEAL, width: 2 },
             },
           ],
         },
@@ -310,15 +345,15 @@ function App() {
         formatter: (params: any) => `${rows[params.value[1]][0]}<br/>${metrics[params.value[0]][1]}: ${params.value[2].toFixed(1)}%`,
       },
       grid: { left: 88, right: 18, top: 20, bottom: 34 },
-      xAxis: { type: "category", data: metrics.map((m) => m[1]), axisLabel: { color: "#8fb0be" }, axisLine: { show: false } },
-      yAxis: { type: "category", data: rows.map(([name]) => name), axisLabel: { color: "#8fb0be" }, axisLine: { show: false } },
+      xAxis: { type: "category", data: metrics.map((m) => m[1]), axisLabel: { color: CHART_MUTED }, axisLine: { show: false } },
+      yAxis: { type: "category", data: rows.map(([name]) => name), axisLabel: { color: CHART_MUTED }, axisLine: { show: false } },
       visualMap: {
         min: 0,
         max: 100,
         show: false,
-        inRange: { color: ["#14343c", "#1d6f6b", "#7ed957"] },
+        inRange: { color: ["#e0f2fe", "#67e8f9", "#16a34a"] },
       },
-      series: [{ type: "heatmap", data, label: { show: true, formatter: (p: any) => `${p.value[2].toFixed(0)}%`, color: "#f4fbfc" } }],
+      series: [{ type: "heatmap", data, label: { show: true, formatter: (p: any) => `${p.value[2].toFixed(0)}%`, color: "#0f172a" } }],
     };
   }, [summary]);
 
@@ -335,6 +370,8 @@ function App() {
     [summary]
   );
   const sourceOkCount = Object.values(summary?.sources || {}).filter((source) => source.status === "ok").length;
+  const compact = summary?.efficiency?.best_compact_model;
+  const baseline = summary?.efficiency?.baseline_model;
 
   return (
     <main className="screen">
@@ -384,6 +421,10 @@ function App() {
           <span>外部数据源</span>
           <strong>{sourceOkCount}/{Object.keys(summary?.sources || {}).length || 0} ok</strong>
         </div>
+        <div className="statusPill">
+          <span>EcoLite 推理</span>
+          <strong>{fmt(compact?.speedup_vs_full, 2)}x</strong>
+        </div>
       </section>
 
       {error && <div className="error" role="alert"><AlertTriangle size={18} aria-hidden="true" /> {error}</div>}
@@ -399,6 +440,12 @@ function App() {
           hint={`PAC节药 ${fmt(summary?.kpis.fixed_chemical_saving_pct)}%，P95 ${fmt(summary?.kpis.recommend_response_p95_ms, 1)}ms`}
         />
         <Kpi icon={<Gauge size={22} />} label="预测误差" value={fmt(summary?.kpis.stage2_test_weighted_mae, 3)} hint={`达标率 ${pct(summary?.kpis.stage2_compliance_rate)}`} />
+        <Kpi
+          icon={<BrainCircuit size={22} />}
+          label="轻量代理"
+          value={`${fmt(compact?.speedup_vs_full, 2)}x`}
+          hint={`特征减少 ${fmt(compact?.feature_reduction_pct)}%，MAE变化 ${fmt(compact?.mae_delta_vs_baseline, 4)}`}
+        />
       </section>
 
       <section className="dashboardGrid">
@@ -448,6 +495,21 @@ function App() {
           <div className="modelMeta">
             <span>{summary?.model.selected_surrogate || "-"} surrogate</span>
             <span>{fmt(summary?.model.feature_count, 0)} features</span>
+            <span>EcoLite {fmt(compact?.top_k, 0)} features</span>
+          </div>
+          <div className="efficiencyGrid" aria-label="轻量模型效率验证">
+            <div>
+              <span>推理耗时</span>
+              <strong>{fmt(baseline?.predict_ms, 1)} → {fmt(compact?.predict_ms, 1)} ms</strong>
+            </div>
+            <div>
+              <span>耗时降低</span>
+              <strong>{fmt(compact?.serving_time_reduction_pct)}%</strong>
+            </div>
+            <div>
+              <span>轻量达标率</span>
+              <strong>{pct(compact?.predicted_compliance_rate)}</strong>
+            </div>
           </div>
           <table className="modelTable">
             <caption className="srOnly">Stage-2 测试集分目标误差</caption>
@@ -472,7 +534,7 @@ function App() {
               ))}
             </tbody>
           </table>
-          <p className="modelNote">以 ExtraTrees 代理模型作为安全基线，RL 推荐和约束盾只在可解释预测边界内给出动作。</p>
+          <p className="modelNote">以 ExtraTrees 代理模型作为安全基线；EcoLite 回放验证用于在线推理效率优化，正式切换前仍需推荐动作一致性回归。</p>
         </section>
 
         <section className="panel">

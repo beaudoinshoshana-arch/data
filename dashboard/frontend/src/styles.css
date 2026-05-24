@@ -1,8 +1,24 @@
 :root {
-  color-scheme: dark;
-  font-family: Inter, "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-  background: #071316;
-  color: #e7f4f6;
+  color-scheme: light;
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+  background: #eef7f6;
+  color: #132427;
+  --bg: #eef7f6;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-strong: #ffffff;
+  --surface-tint: #f2fbfa;
+  --border: #d8e7e9;
+  --border-strong: #b8d2d7;
+  --text: #132427;
+  --muted: #62747d;
+  --subtle: #7d8f98;
+  --primary: #0f766e;
+  --primary-strong: #115e59;
+  --blue: #2563eb;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --shadow: 0 16px 42px rgba(27, 66, 73, 0.12);
 }
 
 * {
@@ -14,9 +30,9 @@ body {
   min-width: 320px;
   overflow-x: hidden;
   background:
-    linear-gradient(180deg, rgba(13, 38, 44, 0.92), rgba(7, 19, 22, 0.98)),
-    repeating-linear-gradient(90deg, rgba(93, 218, 210, 0.04) 0 1px, transparent 1px 80px),
-    #071316;
+    linear-gradient(180deg, rgba(222, 244, 242, 0.98), rgba(247, 251, 251, 0.98) 42%, rgba(239, 247, 246, 0.98)),
+    repeating-linear-gradient(90deg, rgba(15, 118, 110, 0.045) 0 1px, transparent 1px 92px),
+    var(--bg);
 }
 
 button,
@@ -41,10 +57,10 @@ a {
   left: 10px;
   z-index: 20;
   transform: translateY(-160%);
-  border: 1px solid #73e0d6;
+  border: 1px solid var(--primary);
   border-radius: 6px;
-  background: #09252b;
-  color: #f6ffff;
+  background: var(--surface-strong);
+  color: var(--primary-strong);
   padding: 9px 12px;
   text-decoration: none;
   transition: transform 140ms ease;
@@ -59,11 +75,11 @@ a {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  padding: 10px 4px 18px;
+  padding: 12px 4px 18px;
 }
 
 .eyebrow {
-  color: #6fd7ce;
+  color: var(--primary);
   font-size: 12px;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -74,6 +90,7 @@ h1 {
   font-size: 30px;
   line-height: 1.15;
   font-weight: 700;
+  color: var(--text);
 }
 
 .toolbar {
@@ -85,9 +102,9 @@ h1 {
 .toolbar select,
 .toolbar button {
   min-height: 44px;
-  border: 1px solid #2e6370;
-  background: #102b32;
-  color: #e7f4f6;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-strong);
+  color: var(--text);
   border-radius: 6px;
   padding: 0 12px;
   transition: border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
@@ -102,8 +119,8 @@ h1 {
 
 .toolbar button:hover,
 .toolbar select:hover {
-  border-color: #67d6cf;
-  background: #143943;
+  border-color: var(--primary);
+  background: var(--surface-tint);
 }
 
 .toolbar button:disabled {
@@ -114,7 +131,7 @@ h1 {
 button:focus-visible,
 select:focus-visible,
 a:focus-visible {
-  outline: 2px solid #8ff2e8;
+  outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
 
@@ -140,7 +157,7 @@ a:focus-visible {
 
 .statusStrip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -151,20 +168,20 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border: 1px solid #1c4651;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: rgba(9, 29, 34, 0.72);
+  background: rgba(255, 255, 255, 0.74);
   padding: 10px 12px;
 }
 
 .statusPill span {
-  color: #91aebb;
+  color: var(--muted);
   font-size: 12px;
   overflow-wrap: anywhere;
 }
 
 .statusPill strong {
-  color: #eafffb;
+  color: var(--text);
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -174,8 +191,9 @@ a:focus-visible {
 .error {
   margin-bottom: 12px;
   padding: 10px 12px;
-  border: 1px solid #8f3846;
-  background: #3d1820;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #9f1239;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -184,17 +202,17 @@ a:focus-visible {
 
 .kpiGrid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 12px;
 }
 
 .kpi,
 .panel {
-  border: 1px solid #1f4853;
-  background: rgba(12, 31, 36, 0.82);
+  border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: 8px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--shadow);
   min-width: 0;
 }
 
@@ -212,8 +230,8 @@ a:focus-visible {
   border-radius: 7px;
   display: grid;
   place-items: center;
-  background: #123d44;
-  color: #6fd7ce;
+  background: #dff7f4;
+  color: var(--primary);
   flex: 0 0 auto;
 }
 
@@ -222,13 +240,13 @@ a:focus-visible {
 .sourceItem em,
 .scenarioRow em,
 .recActions span {
-  color: #91aebb;
+  color: var(--muted);
   font-size: 12px;
 }
 
 .kpiValue {
   margin-top: 5px;
-  color: #ffffff;
+  color: var(--text);
   font-size: 25px;
   line-height: 1.1;
   font-weight: 700;
@@ -258,14 +276,14 @@ a:focus-visible {
   gap: 8px;
   align-items: center;
   height: 28px;
-  color: #6fd7ce;
+  color: var(--primary);
   min-width: 0;
 }
 
 .panelHeader h2 {
   margin: 0;
   font-size: 15px;
-  color: #dff4f6;
+  color: var(--text);
   font-weight: 650;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -290,7 +308,7 @@ a:focus-visible {
 }
 
 .recTime {
-  color: #91aebb;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -298,8 +316,8 @@ a:focus-visible {
   margin-top: 6px;
   display: inline-flex;
   padding: 5px 9px;
-  background: #173d45;
-  color: #8ff2e8;
+  background: #e0f2fe;
+  color: #075985;
   border-radius: 5px;
 }
 
@@ -315,7 +333,7 @@ a:focus-visible {
 }
 
 .recActions strong {
-  color: #ffffff;
+  color: var(--text);
   font-size: 18px;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
@@ -323,7 +341,7 @@ a:focus-visible {
 
 .recommendBox p {
   margin: 0;
-  color: #c7dde4;
+  color: #40535b;
   line-height: 1.65;
   font-size: 14px;
 }
@@ -338,30 +356,36 @@ a:focus-visible {
 .scenarioRow,
 .sourceItem {
   display: grid;
-  grid-template-columns: minmax(90px, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 4px 10px;
   padding: 10px;
-  background: rgba(17, 48, 55, 0.72);
-  border: 1px solid #204c57;
+  background: #f7fbfb;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  min-width: 0;
 }
 
 .scenarioRow span,
 .sourceItem span {
-  color: #dceef2;
+  color: var(--text);
   font-weight: 650;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .scenarioRow b,
 .sourceItem b {
-  color: #7ed957;
+  color: var(--green);
   font-variant-numeric: tabular-nums;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .scenarioRow em,
 .sourceItem em {
   grid-column: 1 / -1;
   overflow-wrap: anywhere;
+  min-width: 0;
   font-style: normal;
 }
 
@@ -372,7 +396,7 @@ a:focus-visible {
 .aiPanel ul {
   margin: 12px 0;
   padding-left: 18px;
-  color: #cfe1e7;
+  color: #40535b;
   line-height: 1.65;
 }
 
@@ -385,8 +409,8 @@ a:focus-visible {
 .chips span {
   padding: 5px 8px;
   border-radius: 5px;
-  background: #153b44;
-  color: #9beae1;
+  background: #e8f8f6;
+  color: var(--primary-strong);
   font-size: 12px;
 }
 
@@ -402,10 +426,10 @@ a:focus-visible {
 }
 
 .modelMeta span {
-  border: 1px solid #25515c;
+  border: 1px solid var(--border);
   border-radius: 5px;
-  background: rgba(21, 59, 68, 0.74);
-  color: #a8eee7;
+  background: #eef8f7;
+  color: var(--primary-strong);
   padding: 5px 8px;
   font-size: 12px;
 }
@@ -419,7 +443,7 @@ a:focus-visible {
 
 .modelTable th,
 .modelTable td {
-  border-bottom: 1px solid rgba(44, 91, 103, 0.74);
+  border-bottom: 1px solid var(--border);
   padding: 8px 6px;
   text-align: right;
   white-space: nowrap;
@@ -431,23 +455,49 @@ a:focus-visible {
 }
 
 .modelTable thead th {
-  color: #91aebb;
+  color: var(--muted);
   font-weight: 600;
 }
 
 .modelTable tbody th {
-  color: #f2ffff;
+  color: var(--text);
 }
 
 .modelTable tbody td {
-  color: #cfe1e7;
+  color: #40535b;
 }
 
 .modelNote {
   margin: 12px 0 0;
-  color: #a8bfca;
+  color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
+}
+
+.efficiencyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.efficiencyGrid div {
+  border-left: 3px solid #9bd9d3;
+  padding: 4px 8px;
+}
+
+.efficiencyGrid span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.efficiencyGrid strong {
+  color: var(--text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 1180px) {
