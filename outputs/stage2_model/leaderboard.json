@@ -1,0 +1,106 @@
+[
+  {
+    "model": "extra_trees",
+    "validation": {
+      "weighted_normalized_mae": 0.1832335386889497,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.6676089922662026,
+          "rmse": 0.9564894749630252,
+          "r2": 0.3306893715956134,
+          "normalized_mae": 0.12776870568187465,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.07459415040741564,
+          "rmse": 0.1433929182768767,
+          "r2": 0.34432030220208065,
+          "normalized_mae": 0.25543608275034,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.007469028220079246,
+          "rmse": 0.009331638606897844,
+          "r2": -4.233666797973449,
+          "normalized_mae": 0.1983556988664242,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.21837826256522413,
+          "rmse": 0.33217869999680694,
+          "r2": 0.8948448757032005,
+          "normalized_mae": 0.14808351401271166,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      },
+      "overall_compliance": {
+        "actual_rate": 1.0,
+        "predicted_rate": 1.0
+      }
+    }
+  },
+  {
+    "model": "random_forest",
+    "validation": {
+      "weighted_normalized_mae": 0.20399960764093122,
+      "targets": {
+        "label_next_effluent_cod_mgL": {
+          "mae": 0.7725936796027071,
+          "rmse": 1.3491015383045317,
+          "r2": -0.33154732200730685,
+          "normalized_mae": 0.14786094196507446,
+          "limit_upper": 50.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_nh3n_mgL": {
+          "mae": 0.08103096209650941,
+          "rmse": 0.1457374679904566,
+          "r2": 0.32270359639719814,
+          "normalized_mae": 0.27747794466958586,
+          "limit_upper": 5.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tp_mgL": {
+          "mae": 0.009233671455474305,
+          "rmse": 0.011426267881710996,
+          "r2": -6.846916848907761,
+          "normalized_mae": 0.24521949853258493,
+          "limit_upper": 0.5,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        },
+        "label_next_effluent_tn_mgL": {
+          "mae": 0.1962427486747696,
+          "rmse": 0.32620723503348814,
+          "r2": 0.898591570453958,
+          "normalized_mae": 0.13307329897174958,
+          "limit_upper": 15.0,
+          "actual_compliance_rate": 1.0,
+          "predicted_compliance_rate": 1.0,
+          "predicted_mean_exceedance": 0.0
+        }
+      },
+      "overall_compliance": {
+        "actual_rate": 1.0,
+        "predicted_rate": 1.0
+      }
+    }
+  }
+]

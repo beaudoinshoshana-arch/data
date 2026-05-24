@@ -1,0 +1,28 @@
+{
+  "wqp": {
+    "enabled": true,
+    "url": "https://www.waterqualitydata.us/data/Result/search",
+    "params": {
+      "countrycode": "US",
+      "sampleMedia": "Water",
+      "mimeType": "csv",
+      "zip": "no",
+      "sorted": "no",
+      "startDateLo": "01-01-2024",
+      "startDateHi": "01-31-2024",
+      "characteristicName": "Ammonia"
+    },
+    "timeout_sec": 20,
+    "max_rows": 2000
+  },
+  "echo": {
+    "enabled": true,
+    "url": "https://echo.epa.gov/tools/data-downloads",
+    "mode": "metadata_reference"
+  },
+  "kaggle": {
+    "enabled": true,
+    "local_glob": "external_data/kaggle/**/*.csv",
+    "mode": "local_if_available"
+  }
+}

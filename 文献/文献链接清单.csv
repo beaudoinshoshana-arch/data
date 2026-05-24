@@ -1,0 +1,16 @@
+topic,title,year,doi,url
+机理模型,A Comprehensive View of the ASM1 Dynamic Model: Study on a Practical Case,2022,10.3390/w14071046,https://www.mdpi.com/2073-4441/14/7/1046
+机理模型,Systematic Modeling of Municipal Wastewater Activated Sludge Process and Treatment Plant Capacity Analysis Using GPS-X,2020,10.3390/su12198182,https://www.mdpi.com/2071-1050/12/19/8182
+曝气控制,A Review of AI-Driven Control Strategies in the Activated Sludge Process with Emphasis on Aeration Control,2024,10.3390/w16020305,https://www.mdpi.com/2073-4441/16/2/305
+曝气控制,Dissolved Oxygen Control in Activated Sludge Process Using a Neural Network-Based Adaptive PID Algorithm,2018,10.3390/app8020261,https://www.mdpi.com/2076-3417/8/2/261
+曝气控制,Modeling and Control Strategies for Energy Management in a Wastewater Center: A Review on Aeration,2024,10.3390/en17133162,https://www.mdpi.com/1996-1073/17/13/3162
+曝气控制,Oxygen Transfer of Fine-Bubble Aeration in Activated Sludge Treating Saline Industrial Wastewater,2022,10.3390/w14121964,https://www.mdpi.com/2073-4441/14/12/1964
+曝气控制,Aeration Process in Bioreactors as the Main Energy Consumer in a Wastewater Treatment Plant. Review of Solutions and Methods of Process Optimization,2019,10.3390/pr7050311,https://www.mdpi.com/2227-9717/7/5/311
+加药控制,Research on Intelligent Chemical Dosing System for Phosphorus Removal in Wastewater Treatment Plants,2024,10.3390/w16111623,https://www.mdpi.com/2073-4441/16/11/1623
+优化控制,LSTM-Based Model-Predictive Control with Rationality Verification for Bioreactors in Wastewater Treatment,2023,10.3390/w15091779,https://www.mdpi.com/2073-4441/15/9/1779
+优化控制,Optimal Control of Wastewater Treatment Plants Using Economic-Oriented Model Predictive Dynamic Strategies,2017,10.3390/app7080813,https://www.mdpi.com/2076-3417/7/8/813
+时序预测,Prediction of Wastewater Treatment Plant Effluent Water Quality Using Recurrent Neural Network (RNN) Models,2023,10.3390/w15193325,https://www.mdpi.com/2073-4441/15/19/3325
+时序预测,Enhancing Real-Time Prediction of Effluent Water Quality of Wastewater Treatment Plant Based on Improved Feedforward Neural Network Coupled with Optimization Algorithm,2022,10.3390/w14071053,https://www.mdpi.com/2073-4441/14/7/1053
+时序预测,Predicting Effluent Quality in Full-Scale Wastewater Treatment Plants Using Shallow and Deep Artificial Neural Networks,2022,10.3390/su142315598,https://www.mdpi.com/2071-1050/14/23/15598
+时序预测,An Attention-Based CNN-LSTM Method for Effluent Wastewater Quality Prediction,2023,10.3390/app13127011,https://www.mdpi.com/2076-3417/13/12/7011
+时序预测,Prediction of Wastewater Quality at a Wastewater Treatment Plant Inlet Using a System Based on Machine Learning Methods,2022,10.3390/pr10010085,https://www.mdpi.com/2227-9717/10/1/85

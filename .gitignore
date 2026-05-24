@@ -1,0 +1,66 @@
+# Local research/runtime environments
+.codex-research-mcp/
+.playwright-mcp/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyd
+*.pkl
+*.pt
+
+# Frontend dependencies/build outputs
+node_modules/
+dist/
+build/
+.vite/
+
+# Large/raw datasets and binary source materials
+水厂数据-06yzzx/
+污水厂数据/
+台州市污染源在线监测废水数据信息-csv(2026-04-16)/
+文献/*.pdf
+*.pdf
+*.doc
+*.docx
+*.xlsx
+*.xls
+*.rdf
+烟台龙口市污水厂废水信息*.csv
+mar-summer-repro/
+
+# Generated outputs: keep only lightweight summaries and demo tables.
+outputs/*
+!outputs/stage1_data/
+outputs/stage1_data/*
+!outputs/stage1_data/reports/
+outputs/stage1_data/reports/*
+!outputs/stage1_data/reports/stage1_summary.json
+!outputs/stage2_model/
+outputs/stage2_model/*
+!outputs/stage2_model/summary.json
+!outputs/stage2_model/leaderboard.json
+!outputs/stage2_model/feature_columns.json
+!outputs/stage2_model/model_card.md
+!outputs/stage2_model/test_predictions.csv
+!outputs/stage2_model/scenario_recommendations_test.csv
+!outputs/paper_repro_integrated_control/
+outputs/paper_repro_integrated_control/*
+!outputs/paper_repro_integrated_control/summary.json
+!outputs/paper_repro_integrated_control/report.md
+!outputs/paper_repro_integrated_control/steady_state_pareto.csv
+!outputs/paper_repro_integrated_control/online_dynamic_replay.csv
+!outputs/fusion_data/
+outputs/fusion_data/*
+!outputs/fusion_data/source_registry.json
+!outputs/fusion_data/scenario_library.csv
+!outputs/safe_marl/
+outputs/safe_marl/*
+!outputs/safe_marl/summary.json
+!outputs/safe_marl/training_curve.csv
+!outputs/safe_marl/rl_recommendations_test.csv
+
+# Logs and local scratch
+*.log
+external_data/

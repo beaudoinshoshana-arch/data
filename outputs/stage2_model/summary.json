@@ -1,0 +1,211 @@
+{
+  "selected_model": "extra_trees",
+  "row_counts": {
+    "train": 3085,
+    "val": 637,
+    "test": 654,
+    "recommendation_rows": 2046
+  },
+  "feature_count": 349,
+  "feature_groups": {
+    "dynamic_feature_count": 152,
+    "quality_flag_feature_count": 53,
+    "context_column_count": 313
+  },
+  "constraint_config_source": "D:\\part3data\\configs\\stage2_constraints.default.json",
+  "validation": {
+    "weighted_normalized_mae": 0.1832335386889497,
+    "targets": {
+      "label_next_effluent_cod_mgL": {
+        "mae": 0.6676089922662026,
+        "rmse": 0.9564894749630252,
+        "r2": 0.3306893715956134,
+        "normalized_mae": 0.12776870568187465,
+        "limit_upper": 50.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_nh3n_mgL": {
+        "mae": 0.07459415040741564,
+        "rmse": 0.1433929182768767,
+        "r2": 0.34432030220208065,
+        "normalized_mae": 0.25543608275034,
+        "limit_upper": 5.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_tp_mgL": {
+        "mae": 0.007469028220079246,
+        "rmse": 0.009331638606897844,
+        "r2": -4.233666797973449,
+        "normalized_mae": 0.1983556988664242,
+        "limit_upper": 0.5,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_tn_mgL": {
+        "mae": 0.21837826256522413,
+        "rmse": 0.33217869999680694,
+        "r2": 0.8948448757032005,
+        "normalized_mae": 0.14808351401271166,
+        "limit_upper": 15.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      }
+    },
+    "overall_compliance": {
+      "actual_rate": 1.0,
+      "predicted_rate": 1.0
+    }
+  },
+  "test": {
+    "weighted_normalized_mae": 0.2409998853149044,
+    "targets": {
+      "label_next_effluent_cod_mgL": {
+        "mae": 0.5458908537807622,
+        "rmse": 1.4760536946924032,
+        "r2": 0.44014887931853475,
+        "normalized_mae": 0.10447397898938159,
+        "limit_upper": 50.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_nh3n_mgL": {
+        "mae": 0.13426064147371486,
+        "rmse": 0.22678872032491595,
+        "r2": 0.33273353677375905,
+        "normalized_mae": 0.4597547145222823,
+        "limit_upper": 5.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_tp_mgL": {
+        "mae": 0.008129025921071792,
+        "rmse": 0.0207312117264697,
+        "r2": 0.23801987920362955,
+        "normalized_mae": 0.21588332111836164,
+        "limit_upper": 0.5,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      },
+      "label_next_effluent_tn_mgL": {
+        "mae": 0.22937347287316148,
+        "rmse": 0.4688185690679332,
+        "r2": 0.7680566829112517,
+        "normalized_mae": 0.1555394272550924,
+        "limit_upper": 15.0,
+        "actual_compliance_rate": 1.0,
+        "predicted_compliance_rate": 1.0,
+        "predicted_mean_exceedance": 0.0
+      }
+    },
+    "overall_compliance": {
+      "actual_rate": 1.0,
+      "predicted_rate": 1.0
+    }
+  },
+  "top_feature_importance": [
+    {
+      "feature": "effluent_cod_mgL",
+      "importance": 0.3348569226991454
+    },
+    {
+      "feature": "effluent_total_indicator",
+      "importance": 0.12223683953450397
+    },
+    {
+      "feature": "effluent_cod_mgL_lag_1h",
+      "importance": 0.049192140801290335
+    },
+    {
+      "feature": "effluent_cod_mgL_slope_3h",
+      "importance": 0.036760867734066095
+    },
+    {
+      "feature": "effluent_cod_mgL_diff_3h",
+      "importance": 0.03607986937290264
+    },
+    {
+      "feature": "effluent_tp_mgL",
+      "importance": 0.023150138369107447
+    },
+    {
+      "feature": "effluent_tn_mgL",
+      "importance": 0.02134797708502014
+    },
+    {
+      "feature": "effluent_tn_mgL_rollmean_3h",
+      "importance": 0.014687291008345375
+    },
+    {
+      "feature": "effluent_cod_mgL_rollmean_3h",
+      "importance": 0.014585565003580313
+    },
+    {
+      "feature": "effluent_tn_mgL_lag_1h",
+      "importance": 0.012775122669987262
+    },
+    {
+      "feature": "effluent_tn_mgL_rollmean_6h",
+      "importance": 0.011339133813290183
+    },
+    {
+      "feature": "effluent_cod_mgL_rollmean_6h",
+      "importance": 0.01096630092227146
+    },
+    {
+      "feature": "effluent_tn_to_tp_ratio",
+      "importance": 0.008206317342565512
+    },
+    {
+      "feature": "effluent_tn_mgL_lag_3h",
+      "importance": 0.006864654851473048
+    },
+    {
+      "feature": "hour_sin",
+      "importance": 0.006621102443512208
+    },
+    {
+      "feature": "effluent_nh3n_mgL",
+      "importance": 0.006532365635216227
+    },
+    {
+      "feature": "effluent_cod_mgL_lag_3h",
+      "importance": 0.006204238474426568
+    },
+    {
+      "feature": "do_to_no3_ratio",
+      "importance": 0.005315048578643442
+    },
+    {
+      "feature": "effluent_nh3n_mgL_diff_1h",
+      "importance": 0.004463952719337627
+    },
+    {
+      "feature": "effluent_cod_mgL_diff_1h",
+      "importance": 0.004207951833433537
+    }
+  ],
+  "model_artifacts": {
+    "model": "D:\\part3data\\outputs\\stage2_model\\best_model.pkl",
+    "leaderboard": "D:\\part3data\\outputs\\stage2_model\\leaderboard.json",
+    "feature_columns": "D:\\part3data\\outputs\\stage2_model\\feature_columns.json",
+    "test_predictions": "D:\\part3data\\outputs\\stage2_model\\test_predictions.csv",
+    "scenario_recommendations_test": "D:\\part3data\\outputs\\stage2_model\\scenario_recommendations_test.csv",
+    "dynamic_feature_frame": "D:\\part3data\\outputs\\stage2_model\\dynamic_feature_frame.csv",
+    "constraint_config_used": "D:\\part3data\\outputs\\stage2_model\\constraint_config_used.json",
+    "model_card": "D:\\part3data\\outputs\\stage2_model\\model_card.md"
+  },
+  "assumptions": [
+    "Only observed rows are used as supervised samples because simulated scenarios do not have independent ground-truth labels.",
+    "Control recommendation is limited to a local scenario-aware search grid so the optimizer stays near feasible operating ranges.",
+    "Proxy dynamic features approximate the paper's dynamic idea with hourly lag, rolling, first-difference, and second-difference statistics."
+  ]
+}

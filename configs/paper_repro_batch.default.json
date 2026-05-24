@@ -1,0 +1,41 @@
+{
+  "anoxic_grid": {
+    "cn_ratio_start": 1.0,
+    "cn_ratio_stop": 5.0,
+    "cn_ratio_step": 0.2,
+    "no3_start": 7.0,
+    "no3_stop": 17.0,
+    "no3_step": 0.5
+  },
+  "aerobic_grid": {
+    "kla_start": 90.0,
+    "kla_stop": 140.0,
+    "kla_step": 2.5,
+    "nh3_start": 10.0,
+    "nh3_stop": 20.0,
+    "nh3_step": 0.5,
+    "bod_start": 35.0,
+    "bod_stop": 50.0,
+    "bod_step": 0.75
+  },
+  "feature_models": {
+    "anoxic_no3": {
+      "A": {"degree": 2, "inputs": ["anoxic_bod_mgL", "anoxic_no3_mgL"]},
+      "mu": {"degree": 1, "inputs": ["anoxic_bod_mgL", "anoxic_no3_mgL"]},
+      "delta": {"degree": 2, "inputs": ["anoxic_bod_mgL", "anoxic_no3_mgL"]}
+    },
+    "aerobic_bod": {
+      "A": {"degree": 1, "inputs": ["kla_d1", "aerobic_bod_mgL"]},
+      "mu": {"degree": 1, "inputs": ["kla_d1", "aerobic_bod_mgL"]},
+      "delta": {"degree": 1, "inputs": ["kla_d1", "aerobic_bod_mgL"]}
+    },
+    "aerobic_nh3": {
+      "A": {"degree": 1, "inputs": ["kla_d1", "aerobic_nh3_mgL"]},
+      "mu": {"degree": 1, "inputs": ["kla_d1", "aerobic_nh3_mgL"]},
+      "delta": {"degree": 1, "inputs": ["kla_d1", "aerobic_nh3_mgL"]}
+    }
+  },
+  "batch_split": {
+    "train_fraction": 0.7
+  }
+}

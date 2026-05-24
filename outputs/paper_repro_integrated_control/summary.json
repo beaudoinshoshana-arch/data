@@ -1,0 +1,207 @@
+{
+  "positioning": {
+    "mode": "paper_faithful_reimplementation_with_asm2d_inspired_fallback",
+    "deviation_note": "The workspace lacks the authors' original ASM2D code, 2017 plant data, and online Modbus system, so this run reproduces the method chain and trend-level results rather than exact paper values."
+  },
+  "input_counts": {
+    "real_hourly_rows": 4314,
+    "train_rows": 3028,
+    "test_rows": 651,
+    "batch_profile_rows": 953883,
+    "batch_summary_rows": 1323,
+    "online_replay_rows": 342
+  },
+  "mechanistic_proxy_calibration": {
+    "params": {
+      "kla_base_factor": 0.7778469711352604,
+      "kla_from_aeration_weight": 0.43821804006211246,
+      "kla_from_do_gain": 7.893011258816533,
+      "nrr_bias": 0.9998383622232823,
+      "nrr_from_no3_gain": 0.21154716753775143,
+      "nrr_from_flow_gain": 0.0793949825239744,
+      "mechanistic_continuous_gain_per_hour": 0.2000247448497095
+    },
+    "loss": 0.5614715228714502,
+    "elapsed_sec": 97.67144609999377,
+    "sample_size": 240
+  },
+  "mechanistic_calibration": {
+    "params": {
+      "kH": 1.600000000024664,
+      "muH": 7.799999999958339,
+      "uPAO": 5.199999999999843
+    },
+    "loss": 0.3919748180781072,
+    "elapsed_sec": 121.9458980000054,
+    "sample_size": 240
+  },
+  "gamma_calibration": {
+    "gamma": 0.8999999999999999,
+    "loss": 0.43019369576134864,
+    "elapsed_sec": 3.8480844000005163,
+    "sample_size": 240,
+    "objective": "level_plus_delta_with_dynamic_focus",
+    "target_scale_factors": {
+      "pred_bod_proxy_mgL": 0.19753236647200606,
+      "pred_nh3_mgL": 0.35,
+      "pred_tn_mgL": 0.2974764875704046
+    },
+    "bridge_coefficients": {
+      "pred_bod_proxy_mgL": {
+        "slope": 0.12,
+        "intercept": 0.5049621027050245
+      },
+      "pred_nh3_mgL": {
+        "slope": 0.1182510719023096,
+        "intercept": 0.023711748971116657
+      },
+      "pred_tn_mgL": {
+        "slope": -0.01591532653418569,
+        "intercept": 0.041137632113225825
+      }
+    }
+  },
+  "phase1_batch_reconstruction": {
+    "mean_r2": 0.990459017344566,
+    "mean_rmse": 0.3463207867507419,
+    "by_phase": {
+      "aerobic_bod": {
+        "mean_r2": 0.9938104760549468,
+        "mean_rmse": 0.5523618811433876
+      },
+      "aerobic_nh3": {
+        "mean_r2": 0.9992333422855895,
+        "mean_rmse": 0.09094849970539266
+      },
+      "anoxic_no3": {
+        "mean_r2": 0.9783332336931614,
+        "mean_rmse": 0.39565197940344543
+      }
+    }
+  },
+  "phase2_real_prediction": {
+    "mechanistic": {
+      "train": {
+        "targets": {
+          "label_next_effluent_bod_proxy_mgL": {
+            "mae": 0.4448053453930366,
+            "rmse": 1.0678722478423646,
+            "r2": 0.6644237491069915
+          },
+          "label_next_effluent_nh3n_mgL": {
+            "mae": 0.176692377296817,
+            "rmse": 0.23242568925274434,
+            "r2": 0.37021874794079546
+          },
+          "label_next_effluent_tn_mgL": {
+            "mae": 0.3634034546924524,
+            "rmse": 0.5734660602966337,
+            "r2": 0.8500947892441357
+          }
+        },
+        "weighted_rmse": 0.6271440960722782
+      },
+      "test": {
+        "targets": {
+          "label_next_effluent_bod_proxy_mgL": {
+            "mae": 0.34894417699346714,
+            "rmse": 0.5948387910557767,
+            "r2": 0.25770553881240965
+          },
+          "label_next_effluent_nh3n_mgL": {
+            "mae": 0.16396182084061808,
+            "rmse": 0.19246333104375365,
+            "r2": 0.5223287627815718
+          },
+          "label_next_effluent_tn_mgL": {
+            "mae": 0.37864100657143535,
+            "rmse": 0.5947446630195883,
+            "r2": 0.6302995061416921
+          }
+        },
+        "weighted_rmse": 0.45397914164071207
+      },
+      "weighted_rmse": 0.45397914164071207
+    },
+    "data_driven": {
+      "train": {
+        "targets": {
+          "label_next_effluent_bod_proxy_mgL": {
+            "mae": 0.3183800896444469,
+            "rmse": 1.028388481357701,
+            "r2": 0.6887803393944636
+          },
+          "label_next_effluent_nh3n_mgL": {
+            "mae": 0.06093528108884605,
+            "rmse": 0.16233338643384893,
+            "r2": 0.6927887113401449
+          },
+          "label_next_effluent_tn_mgL": {
+            "mae": 0.1566550638091574,
+            "rmse": 0.4393849321497576,
+            "r2": 0.9119981892214714
+          }
+        },
+        "weighted_rmse": 0.5485681333719696
+      },
+      "test": {
+        "targets": {
+          "label_next_effluent_bod_proxy_mgL": {
+            "mae": 0.2381757843729979,
+            "rmse": 0.5485726530095525,
+            "r2": 0.3686852114274958
+          },
+          "label_next_effluent_nh3n_mgL": {
+            "mae": 0.05162890778188683,
+            "rmse": 0.10659823516843733,
+            "r2": 0.8534677816849997
+          },
+          "label_next_effluent_tn_mgL": {
+            "mae": 0.1367281496954691,
+            "rmse": 0.48741313371063,
+            "r2": 0.7516961928989481
+          }
+        },
+        "weighted_rmse": 0.3755337509754854
+      },
+      "weighted_rmse": 0.3755337509754854
+    }
+  },
+  "phase3_steady_state": {
+    "pareto_points": 40,
+    "selected_solution": {
+      "kla_d1": 90.0,
+      "nrr_m3h": 5040.0,
+      "selection_score": 0.0
+    },
+    "elapsed_sec": 85.16523369998322,
+    "baseline_energy_mean": 0.8538681211749046,
+    "steady_energy_mean": 0.8385366485163926,
+    "steady_energy_saving_pct": 1.795531684379573,
+    "baseline_compliance_rate": 0.9984639016897081,
+    "steady_compliance_rate": 0.9984639016897081
+  },
+  "phase4_dynamic_replay": {
+    "steps": 342,
+    "mean_control_execution_sec": 0.5627562654962387,
+    "baseline_energy_total": 294.9071116518597,
+    "steady_energy_total": 281.52261084164104,
+    "dynamic_energy_total": 281.77220770003856,
+    "steady_energy_saving_pct": 4.538547997451874,
+    "dynamic_energy_saving_pct": 4.45391224316319,
+    "baseline_compliance_rate": 1.0,
+    "steady_compliance_rate": 1.0,
+    "dynamic_compliance_rate": 1.0,
+    "final_gamma": 0.8999999999999999
+  },
+  "artifacts": {
+    "batch_profiles": "D:\\part3data\\outputs\\paper_repro_integrated_control\\batch_profiles.csv",
+    "batch_feature_parameters": "D:\\part3data\\outputs\\paper_repro_integrated_control\\batch_feature_parameters.csv",
+    "feature_parameter_functions": "D:\\part3data\\outputs\\paper_repro_integrated_control\\feature_parameter_functions.json",
+    "real_prediction_comparison": "D:\\part3data\\outputs\\paper_repro_integrated_control\\real_prediction_comparison.csv",
+    "steady_state_pareto": "D:\\part3data\\outputs\\paper_repro_integrated_control\\steady_state_pareto.csv",
+    "online_dynamic_replay": "D:\\part3data\\outputs\\paper_repro_integrated_control\\online_dynamic_replay.csv",
+    "online_modbus_mock_log": "D:\\part3data\\outputs\\paper_repro_integrated_control\\online_modbus_mock_log.csv",
+    "report": "D:\\part3data\\outputs\\paper_repro_integrated_control\\report.md"
+  }
+}

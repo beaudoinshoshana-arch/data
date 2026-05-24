@@ -1,0 +1,38 @@
+{
+  "real_prediction": {
+    "mode": "hourly_from_stage1"
+  },
+  "steady_state_optimization": {
+    "population_size": 40,
+    "evaluations": 10000,
+    "constraints": {
+      "bod_proxy_upper": 10.0,
+      "nh3_upper": 5.0,
+      "tn_upper": 15.0
+    },
+    "selection_weights": {
+      "energy": 1.0,
+      "bod_proxy": 0.8,
+      "nh3": 1.0,
+      "tn": 1.0
+    }
+  },
+  "dynamic_control": {
+    "history_days": 7,
+    "replay_interval_min": 30,
+    "model_update_interval_h": 3,
+    "population_size": 16,
+    "evaluations": 64,
+    "kla_local_step_d1": 20.0,
+    "nrr_local_step_m3h": 1800.0,
+    "selection_weights": {
+      "energy": 1.0,
+      "bod": 0.9,
+      "nh3": 1.35,
+      "tn": 1.25
+    }
+  },
+  "reporting": {
+    "save_plots": true
+  }
+}

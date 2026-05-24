@@ -1,0 +1,235 @@
+{
+  "plant_real_hourly": {
+    "source_files": {
+      "influent_cod_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\进水\\进水COD.xlsx",
+      "influent_nh3n_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\进水\\进水氨氮.xlsx",
+      "influent_tp_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\进水\\进水总磷.xlsx",
+      "influent_flow_m3h": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\进水\\进水流量.xlsx",
+      "influent_tn_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\进水\\进水总氮.xlsx",
+      "reactor_do_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\3号\\三号池2#DO.xlsx",
+      "reactor_orp_mv": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\4号\\四号池1#ORP.xlsx",
+      "reactor_no3_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\4号\\四号池1#硝氮.xlsx",
+      "internal_nh3_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\4号\\四号池1#氨氮.xlsx",
+      "sludge_mlss_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\4号\\四号池污泥浓度.xlsx",
+      "effluent_cod_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水COD.xlsx",
+      "effluent_nh3n_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水NH3N.xlsx",
+      "effluent_tp_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水TP.xlsx",
+      "effluent_tn_mgL": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水TN.xlsx",
+      "effluent_flow_m3h": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水流量.xlsx",
+      "effluent_ph": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水PH.xlsx",
+      "effluent_temp_c": "D:\\part3data\\水厂数据-06yzzx\\水厂数据\\出水\\出水温度.xlsx"
+    },
+    "row_count": 4574,
+    "timestamp_min": "2025-01-01T00:00:00",
+    "timestamp_max": "2025-07-10T13:00:00",
+    "core_complete_before_fill_rows": 4380,
+    "qc_summary": {
+      "influent_cod_mgL": {
+        "invalid_or_range_rows": 5,
+        "hampel_rows": 275,
+        "flatline_rows": 0
+      },
+      "influent_nh3n_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 254,
+        "flatline_rows": 27
+      },
+      "influent_tp_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 445,
+        "flatline_rows": 0
+      },
+      "influent_flow_m3h": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 240,
+        "flatline_rows": 0
+      },
+      "influent_tn_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 221,
+        "flatline_rows": 0
+      },
+      "reactor_do_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 151,
+        "flatline_rows": 0
+      },
+      "reactor_orp_mv": {
+        "invalid_or_range_rows": 3608,
+        "hampel_rows": 47,
+        "flatline_rows": 0
+      },
+      "reactor_no3_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 230,
+        "flatline_rows": 28
+      },
+      "internal_nh3_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 167,
+        "flatline_rows": 0
+      },
+      "sludge_mlss_mgL": {
+        "invalid_or_range_rows": 1,
+        "hampel_rows": 100,
+        "flatline_rows": 0
+      },
+      "effluent_cod_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 412,
+        "flatline_rows": 0
+      },
+      "effluent_nh3n_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 705,
+        "flatline_rows": 195
+      },
+      "effluent_tp_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 283,
+        "flatline_rows": 0
+      },
+      "effluent_tn_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 247,
+        "flatline_rows": 0
+      },
+      "effluent_flow_m3h": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 494,
+        "flatline_rows": 0
+      },
+      "effluent_ph": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 236,
+        "flatline_rows": 0
+      },
+      "effluent_temp_c": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 801,
+        "flatline_rows": 112
+      },
+      "label_next_effluent_cod_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 413,
+        "flatline_rows": 0
+      },
+      "label_next_effluent_nh3n_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 705,
+        "flatline_rows": 195
+      },
+      "label_next_effluent_tp_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 284,
+        "flatline_rows": 0
+      },
+      "label_next_effluent_tn_mgL": {
+        "invalid_or_range_rows": 0,
+        "hampel_rows": 248,
+        "flatline_rows": 0
+      }
+    }
+  },
+  "public_monitor_long": {
+    "row_count": 1275790,
+    "source_counts": {
+      "taizhou_csv": {
+        "source_files": 100,
+        "rows": 8776,
+        "enterprise_count": 138,
+        "metric_counts": {
+          "COD": 2236,
+          "FLOW": 2103,
+          "NH3N": 910,
+          "TN": 594,
+          "TP": 583,
+          "pH": 2350
+        }
+      },
+      "jinan_rdf": {
+        "source_files": 9,
+        "rows": 1267014,
+        "enterprise_count": 60,
+        "metric_counts": {
+          "COD": 309464,
+          "NH3N": 309638,
+          "TN": 224618,
+          "TP": 224396,
+          "pH": 198898
+        }
+      }
+    },
+    "metric_counts": {
+      "COD": 311700,
+      "FLOW": 2103,
+      "NH3N": 310548,
+      "TN": 225212,
+      "TP": 224979,
+      "pH": 201248
+    }
+  },
+  "decision_dataset": {
+    "base_rows_after_fill": 4545,
+    "decision_rows": 13635,
+    "split_span": {
+      "train": {
+        "rows": 3181,
+        "timestamp_min": "2025-01-01T00:00:00",
+        "timestamp_max": "2025-05-14T15:00:00"
+      },
+      "val": {
+        "rows": 682,
+        "timestamp_min": "2025-05-14T16:00:00",
+        "timestamp_max": "2025-06-12T01:00:00"
+      },
+      "test": {
+        "rows": 682,
+        "timestamp_min": "2025-06-12T02:00:00",
+        "timestamp_max": "2025-07-10T11:00:00"
+      }
+    },
+    "feature_columns": [
+      "influent_cod_mgL",
+      "influent_bod_mgL",
+      "influent_nh3n_mgL",
+      "influent_tp_mgL",
+      "reactor_do_mgL",
+      "sludge_mlss_mgL",
+      "aeration_intensity_pct",
+      "chemical_dose_kgph",
+      "chemical_dose_pac_mgL"
+    ],
+    "scaler_center": {
+      "influent_cod_mgL": 112.781311,
+      "influent_bod_mgL": 50.75158995,
+      "influent_nh3n_mgL": 17.46,
+      "influent_tp_mgL": 0.28647649999999997,
+      "reactor_do_mgL": 4.8275,
+      "sludge_mlss_mgL": 7067.662499999999,
+      "aeration_intensity_pct": 51.180935297,
+      "chemical_dose_kgph": 14.581440708908183,
+      "chemical_dose_pac_mgL": 9.357180135
+    },
+    "scaler_scale": {
+      "influent_cod_mgL": 76.62926515000002,
+      "influent_bod_mgL": 34.483169317500014,
+      "influent_nh3n_mgL": 5.359999999999998,
+      "influent_tp_mgL": 0.37453575000000006,
+      "reactor_do_mgL": 1.8308,
+      "sludge_mlss_mgL": 558.8312499999993,
+      "aeration_intensity_pct": 5.0235172996499955,
+      "chemical_dose_kgph": 6.209962303019548,
+      "chemical_dose_pac_mgL": 4.203692465000001
+    },
+    "excluded_due_to_flatline_rows": 27,
+    "excluded_due_to_long_gap_rows": 2
+  },
+  "artifacts": {
+    "plant_real_hourly": "D:\\part3data\\outputs\\stage1_data\\plant_real_hourly\\plant_real_hourly.csv",
+    "public_monitor_long": "D:\\part3data\\outputs\\stage1_data\\public_monitor_long\\public_monitor_long.csv",
+    "decision_dataset_raw": "D:\\part3data\\outputs\\stage1_data\\decision_dataset\\decision_dataset_raw.csv",
+    "decision_dataset_scaled": "D:\\part3data\\outputs\\stage1_data\\decision_dataset\\decision_dataset_scaled.csv",
+    "decision_labels_observed": "D:\\part3data\\outputs\\stage1_data\\decision_dataset\\decision_labels_observed.csv"
+  }
+}

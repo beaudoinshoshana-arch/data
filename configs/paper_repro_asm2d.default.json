@@ -1,0 +1,97 @@
+{
+  "design": {
+    "anoxic_volume_m3": 40000.0,
+    "aerobic_volume_m3": 40000.0,
+    "kla_base_d1": 90.0,
+    "sludge_return_flow_m3h": 4800.0,
+    "nitrate_return_flow_m3h": 7200.0
+  },
+  "kinetic_defaults": {
+    "kH": 2.45,
+    "muH": 6.02,
+    "uPAO": 3.92
+  },
+  "kinetic_bounds": {
+    "kH": [1.6, 3.6],
+    "muH": [4.8, 7.8],
+    "uPAO": [2.8, 5.2]
+  },
+  "batch_time": {
+    "duration_min": 120.0,
+    "dt_sec": 10.0
+  },
+  "proxies": {
+    "effluent_bod_proxy_factor": 0.35,
+    "bod_proxy_intercept": 0.368762,
+    "bod_proxy_from_effluent_bod": 0.821128,
+    "bod_proxy_from_influent_bod": 0.00015,
+    "bod_proxy_from_influent_cod": 0.000332,
+    "bod_proxy_from_chemical_kgph": 0.005232,
+    "bod_proxy_from_do": 0.003403,
+    "kla_base_factor": 0.72,
+    "kla_from_aeration_weight": 0.55,
+    "kla_from_do_gain": 4.0,
+    "kla_min_d1": 60.0,
+    "kla_max_d1": 160.0,
+    "nrr_bias": 1.0,
+    "nrr_from_no3_gain": 0.22,
+    "nrr_from_flow_gain": 0.08,
+    "nrr_min_factor": 0.7,
+    "nrr_max_factor": 1.3,
+    "mechanistic_continuous_gain_per_hour": 0.42
+  },
+  "preprocessing": {
+    "sensor_noise_frac": 0.0005,
+    "fourier_keep_ratio": 0.08,
+    "derivative_trim_points": 6
+  },
+  "calibration": {
+    "population_size": 100,
+    "iterations": 100,
+    "train_sample_size": 240,
+    "gamma_bounds": [0.0, 1.2],
+    "random_state": 42,
+    "gamma_focus_share": 0.7,
+    "gamma_dynamic_focus_quantile": 0.7,
+    "gamma_level_loss_weight": 0.35,
+    "gamma_delta_loss_weight": 0.65,
+    "gamma_prior": 0.9,
+    "gamma_prior_weight": 0.08,
+    "gamma_grid_points": 81,
+    "gamma_refine_span": 0.08,
+    "gamma_refine_points": 21,
+    "gamma_window_size": 48,
+    "gamma_recalibration_span": 0.15,
+    "gamma_recalibration_points": 13,
+    "gamma_target_scale_min": 0.02,
+    "gamma_target_scale_max": 0.35,
+    "gamma_bridge_max_abs_slope": 0.12,
+    "mechanistic_proxy_population_size": 80,
+    "mechanistic_proxy_iterations": 80,
+    "mechanistic_proxy_train_sample_size": 240,
+    "mechanistic_proxy_prior_weight": 0.08,
+    "mechanistic_proxy_energy_anchor_weight": 0.8,
+    "mechanistic_proxy_bounds": {
+      "kla_base_factor": [0.5, 0.85],
+      "kla_from_aeration_weight": [0.2, 0.8],
+      "kla_from_do_gain": [0.5, 8.0],
+      "nrr_bias": [0.85, 1.08],
+      "nrr_from_no3_gain": [0.02, 0.6],
+      "nrr_from_flow_gain": [0.01, 0.2],
+      "mechanistic_continuous_gain_per_hour": [0.2, 0.75]
+    }
+  },
+  "costing": {
+    "aeration_from_kla_coef": 0.41046147600429095,
+    "aeration_from_kla_intercept": 4.773765150315974,
+    "aeration_pct_min": 35.0,
+    "aeration_pct_max": 90.0,
+    "aeration_pct_reference": 50.282305769500006,
+    "chemical_dose_reference_kgph": 12.390311309891949,
+    "nrr_reference_m3h": 7221.011207567848,
+    "influent_flow_reference_m3h": 1468.3757325000001,
+    "aeration_weight": 0.65,
+    "recycle_weight": 0.2,
+    "chemical_weight": 0.15
+  }
+}

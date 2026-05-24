@@ -1,0 +1,46 @@
+{
+  "target_limits": {
+    "label_next_effluent_cod_mgL": {
+      "name": "COD",
+      "upper": 50.0,
+      "penalty_weight": 1.0
+    },
+    "label_next_effluent_nh3n_mgL": {
+      "name": "NH3-N",
+      "upper": 5.0,
+      "penalty_weight": 1.2
+    },
+    "label_next_effluent_tp_mgL": {
+      "name": "TP",
+      "upper": 0.5,
+      "penalty_weight": 1.0
+    },
+    "label_next_effluent_tn_mgL": {
+      "name": "TN",
+      "upper": 15.0,
+      "penalty_weight": 1.0
+    }
+  },
+  "decision_bounds": {
+    "aeration_intensity_pct": {
+      "lower": 10.0,
+      "upper": 100.0,
+      "max_step": 20.0
+    },
+    "chemical_dose_pac_mgL": {
+      "lower": 2.0,
+      "upper": 60.0,
+      "max_step": 10.0
+    }
+  },
+  "objective_weights": {
+    "energy": 0.1,
+    "chemical": 0.12,
+    "smoothness": 0.06,
+    "constraint_violation": 6.0
+  },
+  "smoothness_scale": {
+    "aeration_intensity_pct": 15.0,
+    "chemical_dose_kgph": 5.0
+  }
+}

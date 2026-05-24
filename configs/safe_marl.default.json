@@ -1,0 +1,35 @@
+{
+  "decision_bounds": {
+    "aeration_intensity_pct": {
+      "lower": 10.0,
+      "upper": 100.0,
+      "max_step": 20.0
+    },
+    "chemical_dose_pac_mgL": {
+      "lower": 2.0,
+      "upper": 60.0,
+      "max_step": 10.0
+    }
+  },
+  "objective_weights": {
+    "effluent_risk": 1.0,
+    "energy": 0.1,
+    "chemical": 0.12,
+    "smoothness": 0.06,
+    "constraint_violation": 6.0
+  },
+  "grid_offsets": {
+    "observed": {
+      "aeration": [-12, -8, -4, 0, 4, 8, 12],
+      "pac": [-6, -4, -2, 0, 2, 4, 6]
+    },
+    "load_up": {
+      "aeration": [0, 4, 8, 12, 16, 20],
+      "pac": [0, 2, 4, 6, 8, 10]
+    },
+    "rain_dilution": {
+      "aeration": [-18, -14, -10, -6, -2, 0, 4],
+      "pac": [-10, -8, -6, -4, -2, 0, 2]
+    }
+  }
+}

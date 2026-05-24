@@ -1,0 +1,50 @@
+{
+  "mode": "safe_dual_agent_offline_rl",
+  "train_rows": 11166,
+  "test_rows": 1962,
+  "epochs": 120,
+  "elapsed_sec": 9.580146499996772,
+  "recommendation_rows": 1962,
+  "fallback_rate": 0.0,
+  "feasible_rate": 1.0,
+  "mean_objective_improvement_pct": -0.02715159439285232,
+  "mean_energy_delta_pct": 0.00418404971603513,
+  "mean_chemical_delta_kgph": 0.0066682987244130005,
+  "by_scenario": {
+    "load_up": {
+      "rows": 654,
+      "feasible_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": -0.037094149091361175,
+      "energy_delta_pct": 0.014593023479281033,
+      "chemical_delta_kgph": 0.013358603014145161
+    },
+    "observed": {
+      "rows": 654,
+      "feasible_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": -0.024279688236544354,
+      "energy_delta_pct": -0.0006021484219973241,
+      "chemical_delta_kgph": 0.005006765913667821
+    },
+    "rain_dilution": {
+      "rows": 654,
+      "feasible_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": -0.020080945850651438,
+      "energy_delta_pct": -0.0014387259091783189,
+      "chemical_delta_kgph": 0.001639527245426017
+    }
+  },
+  "artifacts": {
+    "policy": "D:\\part3data\\outputs\\safe_marl\\safe_marl_policy.pt",
+    "recommendations": "D:\\part3data\\outputs\\safe_marl\\rl_recommendations_test.csv",
+    "training_curve": "D:\\part3data\\outputs\\safe_marl\\training_curve.csv"
+  },
+  "reflection": {
+    "result": "RL policy is trained against a safety-constrained surrogate reward and every output is checked by the shield.",
+    "risk": "Offline RL cannot prove real-plant optimality without closed-loop plant trials.",
+    "improvement": "Next iteration should replace proxy response coefficients with calibrated plant response tests or high-frequency simulator rollouts.",
+    "next_step": "Expose recommendations through FastAPI and compare against Stage-2 local optimizer in the dashboard."
+  }
+}
