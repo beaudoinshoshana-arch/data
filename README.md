@@ -6,7 +6,8 @@
 
 - `scripts/build_stage1_datasets.py`：构建单厂小时级主表、公开监测长表和决策数据集。
 - `scripts/train_stage2_model.py`：训练多输出出水水质代理模型并生成局部约束推荐。
-- `scripts/build_external_fusion_dataset.py`：融合本地、国内公开监测、WQP/Kaggle 适配数据。
+- `scripts/build_external_fusion_dataset.py`：融合本地、国内公开监测、WQP/Kaggle、IWA BSM1 与 Agtrup 2 分钟 SCADA 适配数据。
+- `scripts/run_minute_level_simulation.py`：基于 2 分钟高频序列仿真 2/5/15/60 分钟控制周期。
 - `scripts/train_safe_marl.py`：训练轻量 PyTorch 双智能体策略，并通过安全盾生成推荐。
 - `scripts/evaluate_decision_benefits.py`：评估节能药耗收益、复杂工况鲁棒性和单组响应时间。
 - `scripts/evaluate_model_energy_efficiency.py`：验证 EcoLite 多模型/集成代理，量化特征裁剪、推理耗时、候选动作搜索时延和测试效果。
@@ -23,6 +24,7 @@ python scripts/build_stage1_datasets.py
 python scripts/validate_stage1_outputs.py
 python scripts/train_stage2_model.py
 python scripts/build_external_fusion_dataset.py
+python scripts/run_minute_level_simulation.py
 python scripts/train_safe_marl.py
 python scripts/evaluate_decision_benefits.py
 uvicorn dashboard.backend.main:app --reload --host 127.0.0.1 --port 8000
@@ -48,6 +50,7 @@ python scripts/build_external_fusion_dataset.py
 python scripts/train_safe_marl.py --epochs 40
 python scripts/evaluate_decision_benefits.py
 python scripts/evaluate_model_energy_efficiency.py
+python scripts/run_minute_level_simulation.py
 pytest
 cd dashboard/frontend
 npm run build
@@ -69,9 +72,10 @@ python scripts/package_submission.py
 
 ## 核心创新
 
-1. 深度融合数据：单厂真实运行数据 + 国内公开监测 + 外部开放数据适配器。
+1. 深度融合数据：单厂真实运行数据 + 国内公开监测 + WQP + IWA BSM1 15 分钟动态进水 + Agtrup/BlueKolding 2 分钟 SCADA。
 2. Safe-MARL：曝气智能体和加药智能体协同输出动作。
 3. 安全约束盾：所有 RL 动作经过设备边界、单次步长和合规风险检查。
 4. 可解释推荐：输出 reward 分解、节能药耗变化和中文动作解释。
 5. EcoLite 多模型优化：比较 ExtraTrees、RandomForest、GradientBoosting、Ridge 与融合模型，推荐 40 特征梯度提升 profile，49 动作搜索 P95 约 2.31ms。
-6. 工程闭环：保留监督代理模型、局部专家优化和论文复现结果作为对照。
+6. 分钟级控制仿真：240,000 条 2 分钟 SCADA 长表记录进入融合库，2 分钟控制相对 60 分钟控制目标函数平均改善约 2.68%。
+7. 工程闭环：保留监督代理模型、局部专家优化和论文复现结果作为对照。

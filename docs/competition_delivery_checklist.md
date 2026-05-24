@@ -3,7 +3,8 @@
 ## 已落地产物
 
 - 数据采集与预处理：`scripts/build_stage1_datasets.py`，输出本地小时级主表、公开监测长表和决策数据集。
-- 外部数据深度融合：`scripts/build_external_fusion_dataset.py`，输出 `outputs/fusion_data/source_registry.json` 和场景库。
+- 外部数据深度融合：`scripts/build_external_fusion_dataset.py`，输出 `outputs/fusion_data/source_registry.json`、场景库和高频数据目录；已接入 Agtrup/BlueKolding 2 分钟 SCADA 与 IWA BSM1 15 分钟动态进水。
+- 分钟级仿真实验：`scripts/run_minute_level_simulation.py`，输出 2/5/15/60 分钟控制周期仿真报告。
 - 监督代理模型：`scripts/train_stage2_model.py`，输出测试预测、推荐结果、模型卡和特征清单。
 - 强化学习主线：`scripts/train_safe_marl.py`，输出 Safe-MARL 策略摘要、训练曲线和测试集推荐。
 - 收益与鲁棒性评估：`scripts/evaluate_decision_benefits.py`，输出节能药耗、扰动鲁棒性和响应时间报告。
@@ -22,5 +23,5 @@
 
 - 结果：已从“算法脚本”推进到“可运行系统”，形成数据、模型、API、大屏、收益评估和文档闭环。
 - 风险：离线 RL 的真实闭环效果仍需要现场或高保真仿真环境验证。
-- 改进：后续优先接入分钟级/秒级高频数据，校准动作响应系数，并把操作员反馈纳入 reward。
+- 改进：后续优先接入本地 PLC/SCADA 分钟级日志，校准动作响应系数，并把操作员反馈纳入 reward。
 - 下一步：可录制演示视频或把完整原始数据作为比赛附件单独提交。

@@ -5,7 +5,8 @@
 | 要求 | 当前证据 | 状态 |
 | --- | --- | --- |
 | 不少于 1 万条污水厂运行时序数据 | `outputs/stage1_data/reports/stage1_summary.json`：决策样本 13,635 条，公开监测 1,275,790 条 | 已满足 |
-| 多源数据采集 | 本地单厂、台州 CSV、济南 RDF、WQP 联网补充、ECHO/Kaggle 适配说明 | 已满足 |
+| 多源数据采集 | 本地单厂、台州 CSV、济南 RDF、WQP 联网补充、IWA BSM1 15 分钟动态进水、Agtrup/BlueKolding 2 分钟 SCADA、ECHO/Kaggle 适配说明 | 已满足 |
+| 分钟级/高频数据源 | `outputs/fusion_data/source_registry.json`：高频 258,830 行、分钟级 240,000 行、最小粒度 2 分钟；`high_frequency_source_catalog.csv` 保留来源目录 | 已满足 |
 | 数据清洗、异常剔除、特征筛选、标准化、规范化存储 | `scripts/build_stage1_datasets.py`、`scripts/validate_stage1_outputs.py`、Stage-1 summary | 已满足 |
 | 智能体模型开发 | `scripts/train_safe_marl.py`、`wwtp_decision/safe_marl.py`，双智能体 RL + 安全盾 | 已满足 |
 | 曝气强度和药剂投加量实时推荐 | `/api/rl/recommend` 与 `outputs/safe_marl/rl_recommendations_test.csv` | 已满足 |
@@ -16,6 +17,7 @@
 | 可视化大屏 | `dashboard/frontend`，浏览器验证标题、KPI、3 个图表、推荐卡、AI 摘要存在 | 已满足 |
 | 大屏视觉参考与可解释评估 | `docs/ui_dashboard_reference_resources.md` 记录新增 skills/优秀大屏案例；前端展示 Stage-2 基准模型分目标误差和 EcoLite 效率指标 | 已满足 |
 | 模型效率与服务能耗优化 | `scripts/evaluate_model_energy_efficiency.py` 比较 ExtraTrees、RandomForest、GradientBoosting、Ridge、误差加权融合和延迟惩罚融合；推荐 40 特征 GradientBoosting，49 动作搜索 P95 约 2.31ms，100ms miss rate 0% | 已满足 |
+| 分钟级仿真实验 | `scripts/run_minute_level_simulation.py` 基于 Agtrup 2 分钟 SCADA 比较 2/5/15/60 分钟控制周期；2 分钟控制相对 60 分钟目标函数平均改善 2.68%，最低达标率 100%，P95 决策最大约 2.8ms | 已满足 |
 | 系统对接适配 | `docs/system_integration_manual.md` 与 FastAPI 接口 | 已满足 |
 | 参考论文并创新 | 文献笔记、Water Research 复现、Safe-MARL/安全盾/融合场景库创新线 | 已满足 |
 | 评分项证据索引 | `docs/final_scoring_matrix.md` 按 20/50/30/20 评分项整理证据 | 已满足 |
@@ -29,6 +31,8 @@
 - `npm run build`：通过。
 - `python scripts/evaluate_decision_benefits.py`：生成收益、鲁棒性、响应时间摘要。
 - `python scripts/evaluate_model_energy_efficiency.py`：生成 EcoLite 多模型、集成和投药时机仿真报告。
+- `python scripts/build_external_fusion_dataset.py`：生成包含 Agtrup 2 分钟 SCADA 与 BSM1 15 分钟动态进水的融合注册表。
+- `python scripts/run_minute_level_simulation.py`：生成分钟级控制周期仿真报告。
 - 浏览器 DOM 检查：标题、KPI、图表 canvas、当前推荐、AI 摘要、基准模型评估、EcoLite 加速、深链筛选、WQP ok 均存在。
 - `docs/competition_report.docx`：ZIP 结构验证包含 `word/document.xml` 和 `[Content_Types].xml`。
 - `python scripts/package_submission.py`：生成作品提交 zip 和 manifest。

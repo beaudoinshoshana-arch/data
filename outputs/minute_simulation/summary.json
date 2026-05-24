@@ -1,0 +1,274 @@
+{
+  "generated_at": "2026-05-24T23:57:40",
+  "method": "2-minute Agtrup SCADA replay with safety-shielded local control cadence simulation",
+  "source": {
+    "source_domain": "agtrup_bluekolding_2min",
+    "native_frequency_min": 2.0,
+    "rows_used": 1440,
+    "metrics": [
+      "FLOW",
+      "DO",
+      "NH3N",
+      "TP",
+      "PAC",
+      "TEMP",
+      "COAGULANT_IN"
+    ]
+  },
+  "cadences_min": [
+    2,
+    5,
+    15,
+    60
+  ],
+  "scenario_variants": [
+    "load_spike_90min",
+    "native_2min",
+    "sensor_flatline_40min"
+  ],
+  "results": [
+    {
+      "scenario_variant": "load_spike_90min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.10968448497343125,
+      "p95_effluent_risk": 0.09888604432241803,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6416009265035487,
+      "decision_count": 1440,
+      "p95_decision_ms": 1.893735039629973
+    },
+    {
+      "scenario_variant": "load_spike_90min",
+      "control_cadence_min": 5,
+      "rows": 1440,
+      "mean_objective": 0.10984615257219947,
+      "p95_effluent_risk": 0.09888604432241803,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.195558280245834,
+      "mean_chemical_kgph": 1.6418128868404875,
+      "decision_count": 480,
+      "p95_decision_ms": 2.1419500058982512
+    },
+    {
+      "scenario_variant": "load_spike_90min",
+      "control_cadence_min": 15,
+      "rows": 1440,
+      "mean_objective": 0.11032017943296804,
+      "p95_effluent_risk": 0.09888604432241803,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.352729383521849,
+      "mean_chemical_kgph": 1.642411221002661,
+      "decision_count": 180,
+      "p95_decision_ms": 1.8117900006473064
+    },
+    {
+      "scenario_variant": "load_spike_90min",
+      "control_cadence_min": 60,
+      "rows": 1440,
+      "mean_objective": 0.11268193152990848,
+      "p95_effluent_risk": 0.09888604432241803,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 11.135894832301844,
+      "mean_chemical_kgph": 1.6450325568645505,
+      "decision_count": 48,
+      "p95_decision_ms": 2.020414979779161
+    },
+    {
+      "scenario_variant": "native_2min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.10823942072849842,
+      "p95_effluent_risk": 0.09422272134093204,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6302686736424374,
+      "decision_count": 1440,
+      "p95_decision_ms": 2.7526000019861385
+    },
+    {
+      "scenario_variant": "native_2min",
+      "control_cadence_min": 5,
+      "rows": 1440,
+      "mean_objective": 0.10840108832726664,
+      "p95_effluent_risk": 0.09422272134093204,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.195558280245834,
+      "mean_chemical_kgph": 1.6304806339793765,
+      "decision_count": 480,
+      "p95_decision_ms": 1.9234099745517592
+    },
+    {
+      "scenario_variant": "native_2min",
+      "control_cadence_min": 15,
+      "rows": 1440,
+      "mean_objective": 0.1088751151880352,
+      "p95_effluent_risk": 0.09422272134093204,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.352729383521849,
+      "mean_chemical_kgph": 1.6310789681415498,
+      "decision_count": 180,
+      "p95_decision_ms": 1.8324699776712803
+    },
+    {
+      "scenario_variant": "native_2min",
+      "control_cadence_min": 60,
+      "rows": 1440,
+      "mean_objective": 0.11123686728497566,
+      "p95_effluent_risk": 0.09422272134093204,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 11.135894832301844,
+      "mean_chemical_kgph": 1.6337003040034397,
+      "decision_count": 48,
+      "p95_decision_ms": 1.769124949350953
+    },
+    {
+      "scenario_variant": "sensor_flatline_40min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.1080521864230295,
+      "p95_effluent_risk": 0.09215593498217714,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6302686736424374,
+      "decision_count": 1440,
+      "p95_decision_ms": 2.200714993523434
+    },
+    {
+      "scenario_variant": "sensor_flatline_40min",
+      "control_cadence_min": 5,
+      "rows": 1440,
+      "mean_objective": 0.10821385402179771,
+      "p95_effluent_risk": 0.09215593498217714,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.195558280245834,
+      "mean_chemical_kgph": 1.6304806339793765,
+      "decision_count": 480,
+      "p95_decision_ms": 2.510115018230863
+    },
+    {
+      "scenario_variant": "sensor_flatline_40min",
+      "control_cadence_min": 15,
+      "rows": 1440,
+      "mean_objective": 0.10868788088256628,
+      "p95_effluent_risk": 0.09215593498217714,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.352729383521849,
+      "mean_chemical_kgph": 1.6310789681415498,
+      "decision_count": 180,
+      "p95_decision_ms": 1.8489600333850824
+    },
+    {
+      "scenario_variant": "sensor_flatline_40min",
+      "control_cadence_min": 60,
+      "rows": 1440,
+      "mean_objective": 0.11104963297950672,
+      "p95_effluent_risk": 0.09215593498217714,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 11.135894832301844,
+      "mean_chemical_kgph": 1.6337003040034397,
+      "decision_count": 48,
+      "p95_decision_ms": 1.7932650283910332
+    }
+  ],
+  "best_by_scenario": [
+    {
+      "scenario_variant": "load_spike_90min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.10968448497343125,
+      "p95_effluent_risk": 0.09888604432241803,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6416009265035487,
+      "decision_count": 1440,
+      "p95_decision_ms": 1.893735039629973
+    },
+    {
+      "scenario_variant": "native_2min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.10823942072849842,
+      "p95_effluent_risk": 0.09422272134093204,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6302686736424374,
+      "decision_count": 1440,
+      "p95_decision_ms": 2.7526000019861385
+    },
+    {
+      "scenario_variant": "sensor_flatline_40min",
+      "control_cadence_min": 2,
+      "rows": 1440,
+      "mean_objective": 0.1080521864230295,
+      "p95_effluent_risk": 0.09215593498217714,
+      "predicted_compliance_rate": 1.0,
+      "feasible_rate": 1.0,
+      "exceedance_minutes": 0.0,
+      "mean_aeration_pct": 10.142065438270834,
+      "mean_chemical_kgph": 1.6302686736424374,
+      "decision_count": 1440,
+      "p95_decision_ms": 2.200714993523434
+    }
+  ],
+  "two_minute_vs_60min": {
+    "load_spike_90min": {
+      "objective_reduction_vs_60min_pct": 2.6600951153216896,
+      "exceedance_minutes_delta_vs_60min": 0.0,
+      "chemical_delta_kgph_vs_60min": -0.003431630361001803,
+      "aeration_delta_pct_vs_60min": -0.9938293940310103
+    },
+    "native_2min": {
+      "objective_reduction_vs_60min_pct": 2.6946520786117945,
+      "exceedance_minutes_delta_vs_60min": 0.0,
+      "chemical_delta_kgph_vs_60min": -0.003431630361002247,
+      "aeration_delta_pct_vs_60min": -0.9938293940310103
+    },
+    "sensor_flatline_40min": {
+      "objective_reduction_vs_60min_pct": 2.699195374225487,
+      "exceedance_minutes_delta_vs_60min": 0.0,
+      "chemical_delta_kgph_vs_60min": -0.003431630361002247,
+      "aeration_delta_pct_vs_60min": -0.9938293940310103
+    }
+  },
+  "headline": {
+    "mean_objective_reduction_vs_60min_pct": 2.6846475227196573,
+    "max_p95_decision_ms": 2.7526000019861385,
+    "min_compliance_rate": 1.0
+  },
+  "reflection": {
+    "result": "Agtrup 2 分钟 SCADA 回放已经形成分钟级控制周期实验，不再只依赖小时级离线验证。",
+    "risk": "Agtrup 过程变量丰富，但 COD/BOD/出水标签与本地厂站不完全一致，因此 COD/BOD 当前仅作为控制仿真的派生代理。",
+    "improvement": "下一步应接入本地 PLC/SCADA 分钟级日志，用在线分析仪或化验校准值替代 COD/BOD 代理。",
+    "next_step": "在大屏 KPI 和参赛报告中展示分钟级数据量与 2 分钟相对 60 分钟控制收益。"
+  }
+}

@@ -39,6 +39,7 @@ const fusion = readJson("outputs/fusion_data/source_registry.json");
 const safe = readJson("outputs/safe_marl/summary.json");
 const paper = readJson("outputs/paper_repro_integrated_control/summary.json");
 const benefit = readJson("outputs/decision_benefit/decision_benefit_summary.json");
+const minute = readJson("outputs/minute_simulation/summary.json");
 
 function fmt(value, digits = 2) {
   if (value === undefined || value === null || Number.isNaN(Number(value))) return "-";
@@ -102,7 +103,8 @@ function table(rows) {
 
 const kpis = [
   ["指标", "结果", "说明"],
-  ["融合长表规模", fmt(fusion.summary?.fusion_rows, 0), "本地单厂 + 国内公开监测 + WQP 联网补充"],
+  ["融合长表规模", fmt(fusion.summary?.fusion_rows, 2), "本地单厂 + 国内公开监测 + WQP + BSM1 + Agtrup 2分钟"],
+  ["分钟级数据", fmt(fusion.summary?.minute_level_rows, 0), `最小粒度 ${fmt(fusion.summary?.min_native_frequency_min, 0)} 分钟`],
   ["决策样本", fmt(stage1.decision_dataset?.decision_rows, 0), "observed/load_up/rain_dilution 三类工况"],
   ["监督模型", stage2.selected_model || "-", `${stage2.feature_count || "-"} 个特征，多输出下一小时出水预测`],
   ["测试综合误差", fmt(stage2.test?.weighted_normalized_mae, 3), "污染物重要性加权归一化 MAE"],
@@ -111,6 +113,7 @@ const kpis = [
   ["当前控制节能/节药", `${fmt(safe.mean_energy_saving_vs_current_pct, 2)}% / ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%`, "安全仲裁后最终推荐"],
   ["传统定值节能/节药", `${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}% / ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%`, "训练期 P90 保守定值对照"],
   ["P95 响应时间", `${fmt(benefit.response_time?.p95_ms, 1)} ms`, "单组推荐响应 ≤1s"],
+  ["2分钟仿真收益", `${fmt(minute.headline?.mean_objective_reduction_vs_60min_pct, 2)}%`, `P95 最大决策 ${fmt(minute.headline?.max_p95_decision_ms, 2)} ms`],
   ["论文复现动态节能", `${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%`, "Water Research 方法链复现对照"],
 ];
 
@@ -124,7 +127,8 @@ const markdown = `# 污水厂曝气加药智能决策开发参赛报告
 
 - 本地单厂小时级运行数据：${fmt(stage1.plant_real_hourly?.row_count, 0)} 行。
 - 国内公开监测长表：${fmt(stage1.public_monitor_long?.row_count, 0)} 行。
-- 融合数据长表：${fmt(fusion.summary?.fusion_rows, 0)} 行，来源包括 ${Object.keys(fusion.summary?.source_domains || {}).join("、")}。
+- 融合数据长表：${fmt(fusion.summary?.fusion_rows, 2)} 行，来源包括 ${Object.keys(fusion.summary?.source_domains || {}).join("、")}。
+- 高频数据：${fmt(fusion.summary?.high_frequency_rows, 0)} 行，其中分钟级 ${fmt(fusion.summary?.minute_level_rows, 0)} 行，最小原始粒度 ${fmt(fusion.summary?.min_native_frequency_min, 0)} 分钟。
 - WQP 联网补充状态：${fusion.sources?.wqp?.status || "-"}，用于外部域分布参考，不直接混入单厂监督训练。
 
 ## 3. 模型与智能体设计
@@ -155,15 +159,17 @@ J = w_q R_{water} + w_e E_{aeration} + w_c C_{PAC} + w_s S_{smooth} + w_v V_{vio
 - 相对当前控制：曝气节能 ${fmt(safe.mean_energy_saving_vs_current_pct, 2)}%，PAC 节药 ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%。
 - 相对传统保守定值：曝气节能 ${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}%，PAC 节药 ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%。
 - 单组推荐响应：P95 ${fmt(benefit.response_time?.p95_ms, 1)} ms，最大 ${fmt(benefit.response_time?.max_ms, 1)} ms。
+- 分钟级仿真：2 分钟控制相对 60 分钟控制目标函数平均改善 ${fmt(minute.headline?.mean_objective_reduction_vs_60min_pct, 2)}%，最低预测达标率 ${fmt((minute.headline?.min_compliance_rate || 0) * 100, 1)}%。
 - 论文复现动态回放节能：${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%。
 
 ## 7. 创新点
 
 1. 外部数据深度融合但保持监督训练域隔离，避免跨域混训风险。
-2. 双智能体协同控制曝气与投药，兼顾合规、能耗、药耗和平滑性。
-3. 约束安全盾把 RL 动作转化为可执行、可解释、可回退的工程建议。
-4. 结合 Water Research 实时控制论文的动态特征思想，形成小时级代理动态特征和在线控制展示。
-5. 大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。
+2. 引入 Agtrup/BlueKolding 2 分钟 SCADA 与 IWA BSM1 15 分钟动态进水，补足小时级数据对投药时机的限制。
+3. 双智能体协同控制曝气与投药，兼顾合规、能耗、药耗和平滑性。
+4. 约束安全盾把 RL 动作转化为可执行、可解释、可回退的工程建议。
+5. 结合 Water Research 实时控制论文的动态特征思想，形成小时级代理动态特征和分钟级控制周期仿真。
+6. 大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。
 
 ## 8. 评审索引
 
@@ -188,7 +194,8 @@ const children = [
   h1("2. 数据采集与融合"),
   bullet(`本地单厂小时级运行数据 ${fmt(stage1.plant_real_hourly?.row_count, 0)} 行。`),
   bullet(`国内公开监测长表 ${fmt(stage1.public_monitor_long?.row_count, 0)} 行。`),
-  bullet(`融合数据长表 ${fmt(fusion.summary?.fusion_rows, 0)} 行，覆盖 ${Object.keys(fusion.summary?.source_domains || {}).join("、")}。`),
+  bullet(`融合数据长表 ${fmt(fusion.summary?.fusion_rows, 2)} 行，覆盖 ${Object.keys(fusion.summary?.source_domains || {}).join("、")}。`),
+  bullet(`高频数据 ${fmt(fusion.summary?.high_frequency_rows, 0)} 行，其中分钟级 ${fmt(fusion.summary?.minute_level_rows, 0)} 行，最小原始粒度 ${fmt(fusion.summary?.min_native_frequency_min, 0)} 分钟。`),
   bullet(`WQP 联网补充状态为 ${fusion.sources?.wqp?.status || "-"}，用于外部域分布参考。`),
   h1("3. 模型与智能体设计"),
   p(`监督代理模型采用 ${stage2.selected_model || "-"}，共 ${stage2.feature_count || "-"} 个特征，用于同时预测下一小时 COD、NH3-N、TP 和 TN。`),
@@ -207,12 +214,14 @@ const children = [
   bullet(`相对当前控制，曝气节能 ${fmt(safe.mean_energy_saving_vs_current_pct, 2)}%，PAC 节药 ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%。`),
   bullet(`相对传统保守定值，曝气节能 ${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}%，PAC 节药 ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%。`),
   bullet(`单组推荐响应 P95 为 ${fmt(benefit.response_time?.p95_ms, 1)} ms，最大 ${fmt(benefit.response_time?.max_ms, 1)} ms。`),
+  bullet(`分钟级仿真中，2 分钟控制相对 60 分钟控制目标函数平均改善 ${fmt(minute.headline?.mean_objective_reduction_vs_60min_pct, 2)}%，最低预测达标率 ${fmt((minute.headline?.min_compliance_rate || 0) * 100, 1)}%。`),
   bullet(`论文复现动态回放节能为 ${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%。`),
   h1("7. 创新点"),
   bullet("外部数据深度融合但保持监督训练域隔离，避免跨域混训风险。"),
+  bullet("引入 Agtrup/BlueKolding 2 分钟 SCADA 与 IWA BSM1 15 分钟动态进水，补足小时级数据对投药时机的限制。"),
   bullet("双智能体协同控制曝气与投药，兼顾合规、能耗、药耗和平滑性。"),
   bullet("约束安全盾把 RL 动作转化为可执行、可解释、可回退的工程建议。"),
-  bullet("结合实时智能控制论文的动态特征思想，形成小时级代理动态特征和在线控制展示。"),
+  bullet("结合实时智能控制论文的动态特征思想，形成小时级代理动态特征和分钟级控制周期仿真。"),
   bullet("大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。"),
   h1("8. 评审索引"),
   bullet("评分项证据矩阵：docs/final_scoring_matrix.md。"),

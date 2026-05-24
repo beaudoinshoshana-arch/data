@@ -115,6 +115,7 @@ def dashboard_summary() -> dict[str, Any]:
     benefit = read_json(ROOT / "outputs" / "decision_benefit" / "decision_benefit_summary.json", {})
     efficiency = read_json(ROOT / "outputs" / "model_efficiency" / "model_efficiency_summary.json", {})
     fusion = read_json(ROOT / "outputs" / "fusion_data" / "source_registry.json", {})
+    minute = read_json(ROOT / "outputs" / "minute_simulation" / "summary.json", {})
     paper = read_json(ROOT / "outputs" / "paper_repro_integrated_control" / "summary.json", {})
     rec = read_csv_cached(str(ROOT / "outputs" / "safe_marl" / "rl_recommendations_test.csv"))
     latest = records(rec.tail(1), 1)
@@ -145,6 +146,13 @@ def dashboard_summary() -> dict[str, Any]:
             "compact_candidate_batch_p95_ms": finite(efficiency.get("best_compact_model", {}).get("candidate_batch_p95_ms")),
             "compact_deadline_miss_rate_100ms": finite(efficiency.get("best_compact_model", {}).get("deadline_miss_rate_100ms")),
             "compact_weighted_normalized_mae": finite(efficiency.get("best_compact_model", {}).get("weighted_normalized_mae")),
+            "high_frequency_rows": int(fusion.get("summary", {}).get("high_frequency_rows", 0)),
+            "minute_level_rows": int(fusion.get("summary", {}).get("minute_level_rows", 0)),
+            "min_native_frequency_min": finite(fusion.get("summary", {}).get("min_native_frequency_min")),
+            "minute_simulation_rows_used": int(minute.get("source", {}).get("rows_used", 0)),
+            "minute_simulation_objective_reduction_vs_60min_pct": finite(minute.get("headline", {}).get("mean_objective_reduction_vs_60min_pct")),
+            "minute_simulation_p95_decision_ms": finite(minute.get("headline", {}).get("max_p95_decision_ms")),
+            "minute_simulation_min_compliance_rate": finite(minute.get("headline", {}).get("min_compliance_rate")),
         },
         "sources": fusion.get("sources", {}),
         "model": {
@@ -157,6 +165,7 @@ def dashboard_summary() -> dict[str, Any]:
         },
         "evaluation": benefit,
         "efficiency": efficiency,
+        "minute_simulation": minute,
         "latest_recommendation": latest[0] if latest else None,
         "reflection": safe.get("reflection", {}),
     }
@@ -270,15 +279,17 @@ def ai_summary() -> dict[str, Any]:
     lines = [
         "系统已形成单厂真实数据、国内公开监测数据和外部数据适配器的融合数据底座。",
         f"当前融合长表约 {kpis['fusion_rows']:,} 条，决策样本 {kpis['decision_rows']:,} 条。",
+        f"已接入 {kpis['minute_level_rows']:,} 条 2 分钟级 Agtrup/BlueKolding SCADA 记录，并保留 BSM1 15 分钟动态进水作为高频仿真先验。",
         f"监督代理模型测试集综合归一化 MAE 为 {kpis['stage2_test_weighted_mae']:.3f}，预测达标率 {kpis['stage2_compliance_rate']:.1%}。",
         f"Safe-MARL 推荐通过安全盾后可行率 {kpis['safe_marl_feasible_rate']:.1%}，相对当前控制节能 {kpis['safe_marl_energy_saving_vs_current_pct']:.2f}%、节药 {kpis['safe_marl_chemical_saving_vs_current_pct']:.2f}%。",
+        f"分钟级仿真显示，2 分钟控制相对 60 分钟控制的平均目标函数改善 {kpis['minute_simulation_objective_reduction_vs_60min_pct']:.2f}%，决策 P95 最大 {kpis['minute_simulation_p95_decision_ms']:.2f} ms。",
         f"相对传统保守定值策略，曝气能耗降低 {kpis['fixed_energy_saving_pct']:.2f}%、PAC 药耗降低 {kpis['fixed_chemical_saving_pct']:.2f}%，P95 决策响应 {kpis['recommend_response_p95_ms']:.1f} ms。",
         "建议答辩时强调：RL 是安全约束下的推荐层，真实执行前仍经过边界裁剪、步长约束和局部专家回退。",
     ]
     return {
         "title": "运行分析摘要",
         "bullets": lines,
-        "innovation": ["双智能体协同决策", "融合场景库", "约束安全盾", "可解释动作建议", "动态控制复现对照"],
+        "innovation": ["双智能体协同决策", "2分钟SCADA融合", "融合场景库", "约束安全盾", "可解释动作建议", "动态控制复现对照"],
         "risk": summary["reflection"].get("risk", "离线 RL 仍需现场闭环验证。"),
         "next_step": summary["reflection"].get("next_step", "接入高频在线数据和真实执行反馈。"),
     }

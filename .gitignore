@@ -58,6 +58,8 @@ outputs/paper_repro_integrated_control/*
 outputs/fusion_data/*
 !outputs/fusion_data/source_registry.json
 !outputs/fusion_data/scenario_library.csv
+!outputs/fusion_data/high_frequency_source_catalog.csv
+!outputs/fusion_data/high_frequency_sample.csv
 !outputs/decision_benefit/
 outputs/decision_benefit/*
 !outputs/decision_benefit/decision_benefit_summary.json
@@ -75,6 +77,11 @@ outputs/model_efficiency/*
 !outputs/model_efficiency/compact_surrogate_candidates.csv
 !outputs/model_efficiency/compact_surrogate_features.json
 !outputs/model_efficiency/timing_simulation.csv
+!outputs/minute_simulation/
+outputs/minute_simulation/*
+!outputs/minute_simulation/summary.json
+!outputs/minute_simulation/minute_simulation_report.md
+!outputs/minute_simulation/minute_control_replay_sample.csv
 
 # Logs and local scratch
 *.log

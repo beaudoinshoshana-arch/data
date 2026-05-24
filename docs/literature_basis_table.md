@@ -16,11 +16,13 @@
 | SAC 延迟控制 | Application of Soft Actor-Critic Algorithms in Optimizing Wastewater Treatment with Time Delays Integration, arXiv:2411.18305 | 支撑污水控制中慢时滞和随机扰动需要 RL/安全约束。 | 当前版本采用轻量 PyTorch 离线 RL，不依赖 stable-baselines3，便于比赛环境复现。 |
 | Water Research 实时智能控制 | Integrated real-time intelligent control for wastewater treatment plants: Data-driven modeling | 支撑动态特征、在线回放和控制链路复现。 | 本项目在 `outputs/paper_repro_integrated_control/` 中复现方法链，并把结果接入大屏 KPI。 |
 | WQP/EPA 外部数据 | Water Quality Portal、EPA ECHO、EPA DMAP | 支撑联网开放水质数据、监管数据和外部域标签。 | 外部数据默认用于场景库和鲁棒性，不直接混入单厂监督训练，降低域偏移风险。 |
+| 高频控制基准数据 | IWA BSM1 Benchmark、Agtrup/BlueKolding Mendeley Data 10.17632/34rpmsxc4z.1 | 支撑分钟级/15 分钟级动态进水和 SCADA 过程变量。 | 新增 2/5/15/60 分钟控制周期仿真，用公开高频数据证明推荐链路不会被小时级粒度限制。 |
 
 ## 创新归纳
 
 1. **Safe-MARL + 双智能体**：将曝气和 PAC 投药拆成协同 agent，共享合规、能耗、药耗和平滑 reward。
-2. **深度融合场景库**：本地单厂、国内公开监测、WQP 联网补充统一到长表规范，但保留域标签。
+2. **深度融合场景库**：本地单厂、国内公开监测、WQP、IWA BSM1 和 Agtrup 2 分钟 SCADA 统一到长表规范，但保留域标签和原始粒度。
 3. **约束安全盾**：动作边界、单步调节、出水风险和专家回退形成工程可执行层。
 4. **目标函数仲裁**：不是盲目采纳 RL，而是在安全和目标函数上与专家搜索比较。
-5. **可解释大屏**：把 reward 分解、动作解释、数据源状态、鲁棒性热力图和 AI 摘要同时展示。
+5. **分钟级仿真实验**：比较 2/5/15/60 分钟控制周期，输出目标函数、达标率、超限分钟和决策耗时。
+6. **可解释大屏**：把 reward 分解、动作解释、数据源状态、鲁棒性热力图和 AI 摘要同时展示。

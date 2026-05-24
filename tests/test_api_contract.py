@@ -21,8 +21,13 @@ def test_dashboard_api_contracts() -> None:
     assert summary["kpis"]["compact_serving_time_reduction_pct"] >= 50.0
     assert summary["kpis"]["compact_candidate_batch_p95_ms"] < 100.0
     assert summary["kpis"]["compact_deadline_miss_rate_100ms"] == 0.0
+    assert summary["kpis"]["minute_level_rows"] >= 200000
+    assert summary["kpis"]["min_native_frequency_min"] <= 2.0
+    assert summary["kpis"]["minute_simulation_p95_decision_ms"] < 1000.0
+    assert summary["kpis"]["minute_simulation_min_compliance_rate"] >= 0.99
     assert summary["efficiency"]["best_compact_model"]["predicted_compliance_rate"] >= 0.99
     assert len(summary["efficiency"]["model_search"]) >= 6
+    assert summary["minute_simulation"]["source"]["native_frequency_min"] <= 2.0
 
     state = {
         "scenario_tag": "load_up",

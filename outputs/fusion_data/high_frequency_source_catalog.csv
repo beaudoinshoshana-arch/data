@@ -1,0 +1,4 @@
+﻿source_domain,source_type,plant_id,rows,metrics,scenario_tags,start_timestamp,end_timestamp,min_frequency_min
+agtrup_bluekolding_2min,mendeley_public_2min_scada,agtrup_bluekolding,240000,"CAPACITY_FACTOR,COAGULANT_IN,DO,FLOW,NH3N,PAC,PROCESS_PHASE_IN,PROCESS_PHASE_OUT,TEMP,TP",observed_external_2min,2021-08-01,2021-09-03 07:58:00,2.0
+iwa_bsm1_dynamic_influent,bsm1_official_15min_influent,bsm1::bsm1_dry_15min,9415,"ALK,BOD,COD,DO,FLOW,NH3N,TN",bsm1_dry_15min,2024-01-01,2024-01-15 00:00:00,15.000000479999827
+iwa_bsm1_dynamic_influent,bsm1_official_15min_influent,bsm1::bsm1_rain_15min,9415,"ALK,BOD,COD,DO,FLOW,NH3N,TN",bsm1_rain_15min,2024-01-01,2024-01-15 00:00:00,15.000000479999827

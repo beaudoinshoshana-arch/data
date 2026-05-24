@@ -15,6 +15,7 @@ python scripts/build_stage1_datasets.py
 python scripts/validate_stage1_outputs.py
 python scripts/train_stage2_model.py
 python scripts/build_external_fusion_dataset.py
+python scripts/run_minute_level_simulation.py
 python scripts/train_safe_marl.py --epochs 120
 python scripts/evaluate_decision_benefits.py
 node scripts/generate_competition_report.cjs

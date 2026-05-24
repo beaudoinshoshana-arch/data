@@ -46,5 +46,35 @@
     "enabled": true,
     "local_glob": "external_data/kaggle/**/*.csv",
     "mode": "local_if_available"
+  },
+  "bsm1": {
+    "enabled": true,
+    "mode": "official_iwa_dynamic_influent",
+    "origin_timestamp": "2024-01-01 00:00:00",
+    "timeout_sec": 20,
+    "max_rows_per_file": 5000,
+    "files": [
+      {
+        "scenario_tag": "bsm1_dry_15min",
+        "url": "https://iwa-mia.org/wp-content/uploads/2019/04/Inf_dry_2006.txt"
+      },
+      {
+        "scenario_tag": "bsm1_rain_15min",
+        "url": "https://iwa-mia.org/wp-content/uploads/2019/04/Inf_rain_2006.txt"
+      }
+    ]
+  },
+  "agtrup_mendeley": {
+    "enabled": true,
+    "mode": "mendeley_public_2min_scada",
+    "dataset_id": "34rpmsxc4z",
+    "version": 1,
+    "folder_id": "root",
+    "doi": "10.17632/34rpmsxc4z.1",
+    "page_url": "https://data.mendeley.com/datasets/34rpmsxc4z/1",
+    "file_api_url": "https://data.mendeley.com/public-api/datasets/{dataset_id}/files?folder_id={folder_id}&version={version}",
+    "timeout_sec": 60,
+    "max_rows": 24000,
+    "cache_path": "external_data/agtrup/IOPTQCfFiFoNPo_2min_Agtrup_Aug_2023.csv"
   }
 }

@@ -157,7 +157,7 @@ a:focus-visible {
 
 .statusStrip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -202,7 +202,7 @@ a:focus-visible {
 
 .kpiGrid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -351,6 +351,29 @@ a:focus-visible {
   display: grid;
   gap: 10px;
   margin-top: 12px;
+}
+
+.minuteSummary {
+  display: grid;
+  gap: 4px;
+  border-left: 3px solid var(--primary);
+  background: #f2fbfa;
+  padding: 9px 10px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+.minuteSummary span,
+.minuteSummary em {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.minuteSummary strong {
+  color: var(--text);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .scenarioRow,

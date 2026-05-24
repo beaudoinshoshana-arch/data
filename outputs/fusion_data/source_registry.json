@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-24T16:50:06",
+  "generated_at": "2026-05-24T23:46:49",
   "sources": {
     "local_plant": {
       "status": "ok",
@@ -22,30 +22,79 @@
     "kaggle": {
       "status": "not_found",
       "pattern": "D:\\part3data\\external_data\\kaggle\\**\\*.csv"
+    },
+    "iwa_bsm1": {
+      "status": "ok",
+      "files": [
+        {
+          "scenario_tag": "bsm1_dry_15min",
+          "status": "ok",
+          "rows": 1345,
+          "url": "https://iwa-mia.org/wp-content/uploads/2019/04/Inf_dry_2006.txt",
+          "native_frequency_min": 15.000000479999827
+        },
+        {
+          "scenario_tag": "bsm1_rain_15min",
+          "status": "ok",
+          "rows": 1345,
+          "url": "https://iwa-mia.org/wp-content/uploads/2019/04/Inf_rain_2006.txt",
+          "native_frequency_min": 15.000000479999827
+        }
+      ],
+      "rows": 18830
+    },
+    "agtrup_mendeley": {
+      "status": "ok",
+      "rows": 240000,
+      "wide_rows": 24000,
+      "filename": "IOPTQCfFiFoNPo_2min_Agtrup_Aug_2023.csv",
+      "cached_raw_path": "D:\\part3data\\external_data\\agtrup\\IOPTQCfFiFoNPo_2min_Agtrup_Aug_2023.csv",
+      "doi": "10.17632/34rpmsxc4z.1",
+      "page_url": "https://data.mendeley.com/datasets/34rpmsxc4z/1",
+      "native_frequency_min": 2.0
     }
   },
   "artifacts": {
     "fusion_long": "D:\\part3data\\outputs\\fusion_data\\fusion_long.csv",
-    "scenario_library": "D:\\part3data\\outputs\\fusion_data\\scenario_library.csv"
+    "scenario_library": "D:\\part3data\\outputs\\fusion_data\\scenario_library.csv",
+    "high_frequency_catalog": "D:\\part3data\\outputs\\fusion_data\\high_frequency_source_catalog.csv",
+    "high_frequency_sample": "D:\\part3data\\outputs\\fusion_data\\high_frequency_sample.csv"
   },
   "summary": {
-    "fusion_rows": 1338699,
+    "fusion_rows": 1597529,
     "source_domains": {
       "china_public_monitor": 1275790,
+      "agtrup_bluekolding_2min": 240000,
       "local_plant": 62904,
+      "iwa_bsm1_dynamic_influent": 18830,
       "us_wqp": 5
     },
     "metric_counts": {
-      "COD": 320710,
-      "NH3N": 319469,
-      "TN": 234228,
-      "TP": 233968,
+      "NH3N": 346159,
+      "COD": 323400,
+      "TP": 257968,
+      "TN": 236918,
       "pH": 205731,
-      "FLOW": 11118,
+      "FLOW": 37808,
+      "DO": 31183,
+      "TEMP": 28477,
+      "CAPACITY_FACTOR": 24000,
+      "COAGULANT_IN": 24000,
+      "PROCESS_PHASE_IN": 24000,
+      "PROCESS_PHASE_OUT": 24000,
+      "PAC": 24000,
       "MLSS": 4505,
-      "DO": 4493,
-      "TEMP": 4477
+      "BOD": 2690,
+      "ALK": 2690
     },
-    "scenario_rows": 21
+    "scenario_rows": 38,
+    "high_frequency_rows": 258830,
+    "minute_level_rows": 240000,
+    "min_native_frequency_min": 2.0,
+    "high_frequency_domains": {
+      "agtrup_bluekolding_2min": 240000,
+      "iwa_bsm1_dynamic_influent": 18830
+    },
+    "high_frequency_catalog_rows": 3
   }
 }

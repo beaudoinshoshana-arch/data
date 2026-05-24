@@ -7,6 +7,7 @@ import {
   BarChart3,
   Bolt,
   BrainCircuit,
+  Clock3,
   Database,
   Droplets,
   Gauge,
@@ -32,6 +33,7 @@ type Summary = {
     robustness?: Record<string, Record<string, number>>;
   };
   efficiency?: EfficiencySummary;
+  minute_simulation?: MinuteSimulation;
   latest_recommendation: Recommendation | null;
   reflection: Record<string, string>;
 };
@@ -100,6 +102,19 @@ type EfficiencySummary = {
     chemical_saving_vs_current_pct?: number;
     energy_saving_vs_fixed_pct?: number;
     chemical_saving_vs_fixed_pct?: number;
+  };
+};
+
+type MinuteSimulation = {
+  source?: {
+    source_domain?: string;
+    native_frequency_min?: number;
+    rows_used?: number;
+  };
+  headline?: {
+    mean_objective_reduction_vs_60min_pct?: number;
+    max_p95_decision_ms?: number;
+    min_compliance_rate?: number;
   };
 };
 
@@ -386,6 +401,7 @@ function App() {
   const sourceOkCount = Object.values(summary?.sources || {}).filter((source) => source.status === "ok").length;
   const compact = summary?.efficiency?.best_compact_model;
   const baseline = summary?.efficiency?.baseline_model;
+  const minute = summary?.minute_simulation;
 
   return (
     <main className="screen">
@@ -436,6 +452,10 @@ function App() {
           <strong>{sourceOkCount}/{Object.keys(summary?.sources || {}).length || 0} ok</strong>
         </div>
         <div className="statusPill">
+          <span>最小粒度</span>
+          <strong>{fmt(summary?.kpis.min_native_frequency_min, 0)} min</strong>
+        </div>
+        <div className="statusPill">
           <span>EcoLite 推理</span>
           <strong>{fmt(compact?.speedup_vs_full, 2)}x</strong>
         </div>
@@ -454,6 +474,18 @@ function App() {
           hint={`PAC节药 ${fmt(summary?.kpis.fixed_chemical_saving_pct)}%，P95 ${fmt(summary?.kpis.recommend_response_p95_ms, 1)}ms`}
         />
         <Kpi icon={<Gauge size={22} />} label="预测误差" value={fmt(summary?.kpis.stage2_test_weighted_mae, 3)} hint={`达标率 ${pct(summary?.kpis.stage2_compliance_rate)}`} />
+        <Kpi
+          icon={<Clock3 size={22} />}
+          label="分钟级数据"
+          value={fmt(summary?.kpis.minute_level_rows, 0)}
+          hint={`${fmt(summary?.kpis.min_native_frequency_min, 0)}min Agtrup SCADA + BSM1 15min`}
+        />
+        <Kpi
+          icon={<Activity size={22} />}
+          label="2min 仿真收益"
+          value={`${fmt(summary?.kpis.minute_simulation_objective_reduction_vs_60min_pct)}%`}
+          hint={`达标 ${pct(summary?.kpis.minute_simulation_min_compliance_rate)}，P95 ${fmt(summary?.kpis.minute_simulation_p95_decision_ms, 2)}ms`}
+        />
         <Kpi
           icon={<BrainCircuit size={22} />}
           label="轻量代理"
@@ -562,6 +594,11 @@ function App() {
 
         <section className="panel">
           <header className="panelHeader"><span aria-hidden="true"><Database size={18} /></span><h2>数据源状态</h2></header>
+          <div className="minuteSummary">
+            <span>{minute?.source?.source_domain || "minute simulation"}</span>
+            <strong>{fmt(minute?.source?.rows_used, 0)} points · {fmt(minute?.source?.native_frequency_min, 0)}min</strong>
+            <em>2min vs 60min 目标函数改善 {fmt(minute?.headline?.mean_objective_reduction_vs_60min_pct)}%</em>
+          </div>
           <div className="sourceList">
             {Object.entries(summary?.sources || {}).map(([name, source]) => (
               <div className="sourceItem" key={name}>

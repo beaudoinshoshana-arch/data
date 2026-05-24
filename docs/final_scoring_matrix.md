@@ -18,7 +18,8 @@
 | --- | ---: | --- |
 | 决策数据量 | 13,635 条 | `outputs/stage1_data/reports/stage1_summary.json` |
 | 公开监测数据量 | 1,275,790 条 | `outputs/stage1_data/reports/stage1_summary.json` |
-| 融合长表数据量 | 1,338,699 条 | `outputs/fusion_data/source_registry.json` |
+| 融合长表数据量 | 1,597,529 条 | `outputs/fusion_data/source_registry.json` |
+| 高频/分钟级数据量 | 高频 258,830 条，分钟级 240,000 条，最小粒度 2 分钟 | `outputs/fusion_data/source_registry.json`、`high_frequency_source_catalog.csv` |
 | 监督模型综合误差 | 加权归一化 MAE = 0.241 | `outputs/stage2_model/summary.json` |
 | 测试集水质达标率 | 100.0% | `outputs/stage2_model/summary.json` |
 | Safe-MARL 推荐可行率 | 100.0% | `outputs/safe_marl/summary.json` |
@@ -27,13 +28,14 @@
 | 冲击/稀释/常规工况 | 三类工况均 100.0% 可行、100.0% 预测达标 | `outputs/decision_benefit/decision_benefit_report.md` |
 | 噪声/设备波动/平直段鲁棒性 | 三类扰动均 100.0% 可行、100.0% 预测达标 | `outputs/decision_benefit/decision_benefit_report.md` |
 | 单组响应时间 | P95 = 1.9 ms，最大 = 3.0 ms | `outputs/decision_benefit/decision_benefit_summary.json` |
+| 分钟级控制周期仿真 | 2 分钟控制相对 60 分钟控制目标函数平均改善 2.68%，最低达标率 100%，P95 最大决策约 2.8 ms | `outputs/minute_simulation/summary.json` |
 
 ## 3. 文档可读性与用户指导性（30 分）
 
 | 评分点 | 当前证据 | 说明 |
 | --- | --- | --- |
 | 环境配置 | `README.md`、`docs/deployment_guide.md` | Python/Node 依赖、运行命令、构建和打包步骤。 |
-| 数据格式与来源 | `README_stage1_data.md`、`docs/data_sources_and_external_downloads.md` | 本地单厂、台州、济南、WQP、ECHO、Kaggle 适配说明。 |
+| 数据格式与来源 | `README_stage1_data.md`、`docs/data_sources_and_external_downloads.md` | 本地单厂、台州、济南、WQP、IWA BSM1、Agtrup 2 分钟 SCADA、ECHO、Kaggle 适配说明。 |
 | 模型训练与推理 | `README_stage2_model.md`、`outputs/stage2_model/model_card.md`、`outputs/safe_marl/model_card.md` | 监督代理模型与 Safe-MARL 决策层说明。 |
 | 系统对接 | `docs/system_integration_manual.md` | FastAPI 路由、请求体、返回字段、PLC/SCADA 旁路接入建议。 |
 | 典型演示 | `docs/demo_script.md` | 按大屏 KPI、预测、推荐、安全、创新和风险组织讲解。 |
@@ -48,6 +50,7 @@
 | 决策效果展示 | `/api/recommendations`、大屏动作对比图 | 基线曝气/药耗与 Safe-MARL 推荐对比。 |
 | Reward 可解释 | 大屏 Reward 雷达图、`rl_recommendations_test.csv` | 出水风险、能耗、药耗、平滑性、违规项。 |
 | 鲁棒性展示 | 大屏鲁棒性热力图、`decision_benefit_report.md` | 噪声、设备波动、传感器平直段和测试集对比。 |
+| 分钟级仿真展示 | 大屏 KPI、`minute_simulation_report.md` | 展示 2/5/15/60 分钟控制周期、冲击负荷和平直段场景。 |
 | 截图证据 | `outputs/dashboard_verified.png` | 浏览器实测后保存的大屏截图，已嵌入 DOCX 报告。 |
 
 ## 5. 一键复现与验证命令
@@ -55,6 +58,8 @@
 ```powershell
 cd D:\part3data
 python scripts/validate_stage1_outputs.py
+python scripts/build_external_fusion_dataset.py
+python scripts/run_minute_level_simulation.py
 python scripts/train_safe_marl.py --epochs 120
 python scripts/evaluate_decision_benefits.py
 python -m pytest
