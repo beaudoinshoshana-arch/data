@@ -29,3 +29,9 @@
 - 结果：React + ECharts 大屏展示实时 KPI、预测曲线、动作对比、reward 雷达图和数据源状态。
 - 风险：ECharts 首包较大，移动端性能需关注。
 - 改进：已配置 manual chunks；后续可按视图懒加载图表。
+
+## 6. 静态托管与作品打包
+
+- 结果：FastAPI 在前端构建后可直接托管大屏首页，`package_submission.py` 生成不含原始大文件的参赛提交包。
+- 风险：运行中的旧后端进程不会自动加载新增静态托管逻辑，需要重启后端。
+- 改进：新增 `run_dashboard.ps1` 和 `run_pipeline.ps1`，并把项目专属 rule/skill 纳入提交包，便于评审复现 workflow。

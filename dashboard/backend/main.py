@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from .schemas import ApiResponse, PlantState
 from .services import (
@@ -68,3 +70,8 @@ def rl_recommend(state: PlantState) -> ApiResponse:
 @app.get("/api/report/ai-summary", response_model=ApiResponse)
 def report_ai_summary() -> ApiResponse:
     return ApiResponse(data=ai_summary())
+
+
+frontend_dist = Path(__file__).resolve().parents[1] / "frontend" / "dist"
+if frontend_dist.exists():
+    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")

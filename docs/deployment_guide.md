@@ -46,6 +46,12 @@ npm run dev
 http://127.0.0.1:5173
 ```
 
+如果前端已构建，也可以只访问后端根路径：
+
+```text
+http://127.0.0.1:8000
+```
+
 ## 生产构建
 
 ```powershell
@@ -54,3 +60,12 @@ npm run build
 ```
 
 构建产物在 `dashboard/frontend/dist/`。如需部署到 Nginx，可将 `/api` 反向代理到 FastAPI 后端。
+
+## 打包提交
+
+```powershell
+cd D:\part3data
+python scripts/package_submission.py
+```
+
+压缩包输出到 `outputs/submission/wwtp_safe_marl_submission.zip`。

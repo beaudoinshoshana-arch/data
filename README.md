@@ -33,6 +33,8 @@ npm run dev
 
 浏览器打开 `http://127.0.0.1:5173` 查看可视化大屏。前端通过 Vite 代理访问 `http://127.0.0.1:8000/api/*`。
 
+如果已经执行过 `npm run build`，也可以只启动后端并访问 `http://127.0.0.1:8000`，FastAPI 会自动托管 `dashboard/frontend/dist`。
+
 ## 验证
 
 ```powershell
@@ -43,6 +45,14 @@ pytest
 cd dashboard/frontend
 npm run build
 ```
+
+## 交付打包
+
+```powershell
+python scripts/package_submission.py
+```
+
+生成的作品包位于 `outputs/submission/wwtp_safe_marl_submission.zip`。原始大数据、PDF/Office 源材料、模型二进制和 `node_modules` 不进入压缩包。
 
 ## 已保留的轻量结果
 
