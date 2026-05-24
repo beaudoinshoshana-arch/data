@@ -25,6 +25,7 @@ build/
 *.pdf
 *.doc
 *.docx
+!docs/competition_report.docx
 *.xlsx
 *.xls
 *.rdf
