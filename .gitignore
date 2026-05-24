@@ -74,6 +74,7 @@ outputs/model_efficiency/*
 !outputs/model_efficiency/model_efficiency_report.md
 !outputs/model_efficiency/compact_surrogate_candidates.csv
 !outputs/model_efficiency/compact_surrogate_features.json
+!outputs/model_efficiency/timing_simulation.csv
 
 # Logs and local scratch
 *.log

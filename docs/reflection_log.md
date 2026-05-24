@@ -59,3 +59,9 @@
 - 结果：新增 `ui-ux-design` 和 `react-performance-optimization` skills；大屏由深色控制室风格改为明亮工业数据产品风，并在页面中展示 EcoLite 轻量代理模型验证结果。
 - 风险：浅色主题更适合评审和日常阅读，但夜间值守大屏可能仍需要深色主题；轻量代理目前是回放验证结果，尚未替换在线基线模型。
 - 改进：下一步增加深浅主题切换和 `compact/full` 模型 profile 灰度开关，并用推荐动作一致率做上线门槛。
+
+## 11. 多模型集成与投药时机仿真
+
+- 结果：EcoLite 从单一 ExtraTrees 特征裁剪升级为多模型基准优化，覆盖 ExtraTrees、RandomForest、GradientBoosting、Ridge、误差加权融合和延迟惩罚融合；同步输出单点、49 动作候选搜索 P95 与 deadline miss rate。
+- 风险：融合模型可能降低误差但成倍增加推理调用，极短投药时机下不一定优于单模型。
+- 改进：当前推荐 40 特征 GradientBoosting profile，下一步应将它固化为可选在线模型 artifact，并把真实推荐链路耗时写入运行日志。

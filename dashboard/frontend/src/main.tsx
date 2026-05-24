@@ -72,14 +72,28 @@ type EfficiencySummary = {
     predict_ms?: number;
   };
   best_compact_model?: {
+    name?: string;
+    family?: string;
     top_k?: number;
+    feature_count?: number;
     feature_reduction_pct?: number;
     weighted_normalized_mae?: number;
     mae_delta_vs_baseline?: number;
     predicted_compliance_rate?: number;
     predict_ms?: number;
+    candidate_batch_p95_ms?: number;
+    single_p95_ms?: number;
     speedup_vs_full?: number;
     serving_time_reduction_pct?: number;
+    deadline_miss_rate_100ms?: number;
+    member_names?: string[];
+  };
+  recommended_online_profile?: {
+    name?: string;
+    family?: string;
+    candidate_batch_p95_ms?: number;
+    weighted_normalized_mae?: number;
+    miss_rate_100ms?: number;
   };
   plant_energy_evidence?: {
     energy_saving_vs_current_pct?: number;
@@ -444,7 +458,7 @@ function App() {
           icon={<BrainCircuit size={22} />}
           label="轻量代理"
           value={`${fmt(compact?.speedup_vs_full, 2)}x`}
-          hint={`特征减少 ${fmt(compact?.feature_reduction_pct)}%，MAE变化 ${fmt(compact?.mae_delta_vs_baseline, 4)}`}
+          hint={`49动作P95 ${fmt(compact?.candidate_batch_p95_ms, 2)}ms，MAE变化 ${fmt(compact?.mae_delta_vs_baseline, 4)}`}
         />
       </section>
 
@@ -495,7 +509,8 @@ function App() {
           <div className="modelMeta">
             <span>{summary?.model.selected_surrogate || "-"} surrogate</span>
             <span>{fmt(summary?.model.feature_count, 0)} features</span>
-            <span>EcoLite {fmt(compact?.top_k, 0)} features</span>
+            <span>{compact?.name || "EcoLite"} profile</span>
+            <span>{fmt(compact?.feature_count || compact?.top_k, 0)} effective features</span>
           </div>
           <div className="efficiencyGrid" aria-label="轻量模型效率验证">
             <div>
@@ -509,6 +524,14 @@ function App() {
             <div>
               <span>轻量达标率</span>
               <strong>{pct(compact?.predicted_compliance_rate)}</strong>
+            </div>
+            <div>
+              <span>49动作P95</span>
+              <strong>{fmt(compact?.candidate_batch_p95_ms, 2)} ms</strong>
+            </div>
+            <div>
+              <span>100ms miss</span>
+              <strong>{pct(compact?.deadline_miss_rate_100ms)}</strong>
             </div>
           </div>
           <table className="modelTable">
@@ -534,7 +557,7 @@ function App() {
               ))}
             </tbody>
           </table>
-          <p className="modelNote">以 ExtraTrees 代理模型作为安全基线；EcoLite 回放验证用于在线推理效率优化，正式切换前仍需推荐动作一致性回归。</p>
+          <p className="modelNote">以 ExtraTrees 代理模型作为安全基线；EcoLite 已比较树模型、梯度提升、Ridge 与两类融合，在线推荐优先选择满足候选动作搜索时限的 profile。</p>
         </section>
 
         <section className="panel">

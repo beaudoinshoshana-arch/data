@@ -142,6 +142,9 @@ def dashboard_summary() -> dict[str, Any]:
             "compact_speedup_vs_full": finite(efficiency.get("best_compact_model", {}).get("speedup_vs_full")),
             "compact_serving_time_reduction_pct": finite(efficiency.get("best_compact_model", {}).get("serving_time_reduction_pct")),
             "compact_mae_delta_vs_baseline": finite(efficiency.get("best_compact_model", {}).get("mae_delta_vs_baseline")),
+            "compact_candidate_batch_p95_ms": finite(efficiency.get("best_compact_model", {}).get("candidate_batch_p95_ms")),
+            "compact_deadline_miss_rate_100ms": finite(efficiency.get("best_compact_model", {}).get("deadline_miss_rate_100ms")),
+            "compact_weighted_normalized_mae": finite(efficiency.get("best_compact_model", {}).get("weighted_normalized_mae")),
         },
         "sources": fusion.get("sources", {}),
         "model": {

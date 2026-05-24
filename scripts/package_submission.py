@@ -61,6 +61,7 @@ INCLUDE_FILES = [
     "outputs/model_efficiency/model_efficiency_report.md",
     "outputs/model_efficiency/compact_surrogate_candidates.csv",
     "outputs/model_efficiency/compact_surrogate_features.json",
+    "outputs/model_efficiency/timing_simulation.csv",
     "outputs/stage1_data/reports/stage1_summary.json",
     "outputs/stage2_model/feature_columns.json",
     "outputs/stage2_model/leaderboard.json",

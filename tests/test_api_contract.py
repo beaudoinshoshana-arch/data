@@ -19,7 +19,10 @@ def test_dashboard_api_contracts() -> None:
     assert summary["kpis"]["recommend_response_p95_ms"] < 1000.0
     assert summary["kpis"]["compact_feature_reduction_pct"] >= 50.0
     assert summary["kpis"]["compact_serving_time_reduction_pct"] >= 50.0
+    assert summary["kpis"]["compact_candidate_batch_p95_ms"] < 100.0
+    assert summary["kpis"]["compact_deadline_miss_rate_100ms"] == 0.0
     assert summary["efficiency"]["best_compact_model"]["predicted_compliance_rate"] >= 0.99
+    assert len(summary["efficiency"]["model_search"]) >= 6
 
     state = {
         "scenario_tag": "load_up",
