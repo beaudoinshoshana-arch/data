@@ -23,6 +23,27 @@ python scripts/train_safe_marl.py
 uvicorn dashboard.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
+另开一个终端启动前端：
+
+```powershell
+cd dashboard/frontend
+npm install
+npm run dev
+```
+
+浏览器打开 `http://127.0.0.1:5173` 查看可视化大屏。前端通过 Vite 代理访问 `http://127.0.0.1:8000/api/*`。
+
+## 验证
+
+```powershell
+python scripts/validate_stage1_outputs.py
+python scripts/build_external_fusion_dataset.py
+python scripts/train_safe_marl.py --epochs 40
+pytest
+cd dashboard/frontend
+npm run build
+```
+
 ## 已保留的轻量结果
 
 仓库只保留可复现和演示所需的轻量结果文件，例如 `summary.json`、模型卡、测试预测表、Safe-MARL 推荐表和场景库。原始数据、PDF、Word、Excel、模型二进制和大规模融合长表已通过 `.gitignore` 排除，避免把大文件或敏感材料上传到 GitHub。

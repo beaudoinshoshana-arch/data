@@ -1,0 +1,347 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { createRoot } from "react-dom/client";
+import * as echarts from "echarts";
+import {
+  Activity,
+  AlertTriangle,
+  BarChart3,
+  Bolt,
+  BrainCircuit,
+  Database,
+  Droplets,
+  Gauge,
+  RefreshCcw,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+import "./styles.css";
+
+type Summary = {
+  project: { name: string; positioning: string };
+  kpis: Record<string, number>;
+  sources: Record<string, { status: string; rows?: number; url?: string; error?: string }>;
+  model: {
+    selected_surrogate: string;
+    feature_count: number;
+    safe_marl_mode: string;
+    safe_marl_rows: number;
+    safe_marl_by_scenario: Record<string, Record<string, number>>;
+  };
+  latest_recommendation: Recommendation | null;
+  reflection: Record<string, string>;
+};
+
+type Recommendation = {
+  timestamp: string;
+  scenario_tag: string;
+  fallback_reason: string;
+  final_reward: number;
+  objective_improvement_pct: number;
+  baseline_aeration_intensity_pct: number;
+  recommended_aeration_intensity_pct: number;
+  baseline_chemical_dose_kgph: number;
+  recommended_chemical_dose_kgph: number;
+  reward_effluent_risk: number;
+  reward_energy_term: number;
+  reward_chemical_term: number;
+  reward_smoothness_term: number;
+  constraint_violation: number;
+  explanation: string;
+};
+
+type AiSummary = {
+  title: string;
+  bullets: string[];
+  innovation: string[];
+  risk: string;
+  next_step: string;
+};
+
+const API = "";
+
+async function getData<T>(path: string): Promise<T> {
+  const res = await fetch(`${API}${path}`);
+  if (!res.ok) throw new Error(`${path} ${res.status}`);
+  const body = await res.json();
+  return body.data as T;
+}
+
+function fmt(value?: number, digits = 2) {
+  if (value === undefined || Number.isNaN(value)) return "-";
+  if (Math.abs(value) >= 1000000) return `${(value / 1000000).toFixed(2)}M`;
+  if (Math.abs(value) >= 10000) return `${(value / 10000).toFixed(1)}万`;
+  return value.toFixed(digits);
+}
+
+function pct(value?: number) {
+  if (value === undefined || Number.isNaN(value)) return "-";
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+function useChart(id: string, option: echarts.EChartsOption | null) {
+  useEffect(() => {
+    if (!option) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    const chart = echarts.init(el);
+    chart.setOption(option);
+    const resize = () => chart.resize();
+    window.addEventListener("resize", resize);
+    return () => {
+      window.removeEventListener("resize", resize);
+      chart.dispose();
+    };
+  }, [id, option]);
+}
+
+function Kpi({ icon, label, value, hint }: { icon: React.ReactNode; label: string; value: string; hint: string }) {
+  return (
+    <section className="kpi">
+      <div className="kpiIcon">{icon}</div>
+      <div>
+        <div className="kpiLabel">{label}</div>
+        <div className="kpiValue">{value}</div>
+        <div className="kpiHint">{hint}</div>
+      </div>
+    </section>
+  );
+}
+
+function ChartPanel({ title, icon, id, children }: { title: string; icon: React.ReactNode; id?: string; children?: React.ReactNode }) {
+  return (
+    <section className="panel">
+      <header className="panelHeader">
+        <span>{icon}</span>
+        <h2>{title}</h2>
+      </header>
+      {id ? <div id={id} className="chart" /> : children}
+    </section>
+  );
+}
+
+function App() {
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [ai, setAi] = useState<AiSummary | null>(null);
+  const [predictionSeries, setPredictionSeries] = useState<any[]>([]);
+  const [aerationSeries, setAerationSeries] = useState<any[]>([]);
+  const [pacSeries, setPacSeries] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [metric, setMetric] = useState("COD");
+  const [scenario, setScenario] = useState("");
+  const [error, setError] = useState("");
+
+  const load = async () => {
+    setError("");
+    try {
+      const [summaryData, aiData, predData, aerData, pacData, recData] = await Promise.all([
+        getData<Summary>("/api/summary"),
+        getData<AiSummary>("/api/report/ai-summary"),
+        getData<{ series: any[] }>(`/api/timeseries?metric=${metric}&source=prediction`),
+        getData<{ series: any[] }>(`/api/timeseries?metric=AERATION&source=rl&scenario=${scenario}`),
+        getData<{ series: any[] }>(`/api/timeseries?metric=PAC&source=rl&scenario=${scenario}`),
+        getData<{ items: Recommendation[] }>(`/api/recommendations?limit=80${scenario ? `&scenario=${scenario}` : ""}`),
+      ]);
+      setSummary(summaryData);
+      setAi(aiData);
+      setPredictionSeries(predData.series);
+      setAerationSeries(aerData.series);
+      setPacSeries(pacData.series);
+      setRecommendations(recData.items);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [metric, scenario]);
+
+  const predictionOption = useMemo<echarts.EChartsOption | null>(() => {
+    if (!predictionSeries.length) return null;
+    const actualKey = Object.keys(predictionSeries[0]).find((k) => k.startsWith("actual_"));
+    const predKey = Object.keys(predictionSeries[0]).find((k) => k.startsWith("pred_"));
+    const limitKey = Object.keys(predictionSeries[0]).find((k) => k.endsWith("_upper_limit"));
+    const x = predictionSeries.map((d) => d.timestamp?.slice(5, 16));
+    return {
+      tooltip: { trigger: "axis" },
+      legend: { top: 0, textStyle: { color: "#d6e4ec" } },
+      grid: { left: 48, right: 24, top: 42, bottom: 34 },
+      xAxis: { type: "category", data: x, axisLabel: { color: "#8fb0be" }, axisLine: { lineStyle: { color: "#2b5261" } } },
+      yAxis: { type: "value", axisLabel: { color: "#8fb0be" }, splitLine: { lineStyle: { color: "#183641" } } },
+      series: [
+        { name: "实测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[actualKey || ""]), lineStyle: { color: "#58d5c9", width: 2 } },
+        { name: "预测", type: "line", smooth: true, symbol: "none", data: predictionSeries.map((d) => d[predKey || ""]), lineStyle: { color: "#f6c85f", width: 2 } },
+        { name: "限值", type: "line", symbol: "none", data: predictionSeries.map((d) => d[limitKey || ""]), lineStyle: { color: "#e35f6f", type: "dashed", width: 1.5 } },
+      ],
+    };
+  }, [predictionSeries]);
+
+  const actionOption = useMemo<echarts.EChartsOption | null>(() => {
+    if (!aerationSeries.length) return null;
+    const x = aerationSeries.map((d) => d.timestamp?.slice(5, 16));
+    return {
+      tooltip: { trigger: "axis" },
+      legend: { top: 0, textStyle: { color: "#d6e4ec" } },
+      grid: { left: 46, right: 24, top: 42, bottom: 34 },
+      xAxis: { type: "category", data: x, axisLabel: { color: "#8fb0be" }, axisLine: { lineStyle: { color: "#2b5261" } } },
+      yAxis: { type: "value", axisLabel: { color: "#8fb0be" }, splitLine: { lineStyle: { color: "#183641" } } },
+      series: [
+        { name: "基线曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.baseline_aeration_intensity_pct), lineStyle: { color: "#8fb0be", width: 1.5 } },
+        { name: "RL曝气%", type: "line", symbol: "none", data: aerationSeries.map((d) => d.recommended_aeration_intensity_pct), lineStyle: { color: "#56ccf2", width: 2.2 } },
+        { name: "基线药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.baseline_chemical_dose_kgph), lineStyle: { color: "#f2994a", width: 1.5 } },
+        { name: "RL药耗kg/h", type: "line", symbol: "none", data: pacSeries.map((d) => d.recommended_chemical_dose_kgph), lineStyle: { color: "#7ed957", width: 2.2 } },
+      ],
+    };
+  }, [aerationSeries, pacSeries]);
+
+  const rewardOption = useMemo<echarts.EChartsOption | null>(() => {
+    const latest = recommendations[recommendations.length - 1];
+    if (!latest) return null;
+    return {
+      tooltip: {},
+      radar: {
+        indicator: [
+          { name: "出水风险", max: 1.4 },
+          { name: "能耗", max: 1 },
+          { name: "药耗", max: 1 },
+          { name: "平滑", max: 1 },
+          { name: "违规", max: 1 },
+        ],
+        axisName: { color: "#cfe2eb" },
+        splitLine: { lineStyle: { color: "#244c5a" } },
+        splitArea: { areaStyle: { color: ["rgba(16,42,52,.4)", "rgba(23,59,70,.4)"] } },
+      },
+      series: [
+        {
+          type: "radar",
+          data: [
+            {
+              name: "Reward分解",
+              value: [
+                latest.reward_effluent_risk,
+                latest.reward_energy_term,
+                latest.reward_chemical_term,
+                latest.reward_smoothness_term,
+                latest.constraint_violation,
+              ],
+              areaStyle: { color: "rgba(88,213,201,.26)" },
+              lineStyle: { color: "#58d5c9", width: 2 },
+            },
+          ],
+        },
+      ],
+    };
+  }, [recommendations]);
+
+  useChart("predictionChart", predictionOption);
+  useChart("actionChart", actionOption);
+  useChart("rewardChart", rewardOption);
+
+  const latest = recommendations[recommendations.length - 1] || summary?.latest_recommendation;
+  const byScenario = summary?.model.safe_marl_by_scenario || {};
+
+  return (
+    <main className="screen">
+      <header className="topbar">
+        <div>
+          <div className="eyebrow">Safe-MARL WWTP Control Center</div>
+          <h1>污水厂曝气加药智能决策大屏</h1>
+        </div>
+        <div className="toolbar">
+          <select value={metric} onChange={(e) => setMetric(e.target.value)} aria-label="选择水质指标">
+            <option value="COD">COD</option>
+            <option value="NH3N">NH3-N</option>
+            <option value="TP">TP</option>
+            <option value="TN">TN</option>
+          </select>
+          <select value={scenario} onChange={(e) => setScenario(e.target.value)} aria-label="选择工况">
+            <option value="">全部工况</option>
+            <option value="observed">常规</option>
+            <option value="load_up">冲击负荷</option>
+            <option value="rain_dilution">雨水稀释</option>
+          </select>
+          <button onClick={load} title="刷新数据">
+            <RefreshCcw size={18} />
+          </button>
+        </div>
+      </header>
+
+      {error && <div className="error"><AlertTriangle size={18} /> {error}</div>}
+
+      <section className="kpiGrid">
+        <Kpi icon={<Database size={22} />} label="融合数据" value={fmt(summary?.kpis.fusion_rows, 0)} hint="本地 + 公开监测 + 外部适配" />
+        <Kpi icon={<BrainCircuit size={22} />} label="决策样本" value={fmt(summary?.kpis.decision_rows, 0)} hint={`${fmt(summary?.model.feature_count, 0)} 个模型特征`} />
+        <Kpi icon={<ShieldCheck size={22} />} label="安全可行率" value={pct(summary?.kpis.safe_marl_feasible_rate)} hint="RL 动作经过约束盾" />
+        <Kpi icon={<Bolt size={22} />} label="动态节能" value={`${fmt(summary?.kpis.dynamic_energy_saving_pct)}%`} hint={`${fmt(summary?.kpis.dynamic_mean_execution_sec)}s 平均控制耗时`} />
+        <Kpi icon={<Gauge size={22} />} label="预测误差" value={fmt(summary?.kpis.stage2_test_weighted_mae, 3)} hint={`达标率 ${pct(summary?.kpis.stage2_compliance_rate)}`} />
+      </section>
+
+      <section className="dashboardGrid">
+        <ChartPanel title={`${metric} 未来出水预测`} icon={<Activity size={18} />} id="predictionChart" />
+        <ChartPanel title="曝气与药耗动作对比" icon={<BarChart3 size={18} />} id="actionChart" />
+        <ChartPanel title="最新 Reward 分解" icon={<Sparkles size={18} />} id="rewardChart" />
+        <ChartPanel title="当前推荐" icon={<ShieldCheck size={18} />}>
+          <div className="recommendBox">
+            <div className="recTime">{latest?.timestamp || "-"}</div>
+            <div className="recScenario">{latest?.scenario_tag || "-"}</div>
+            <div className="recActions">
+              <div>
+                <span>曝气</span>
+                <strong>{fmt(latest?.baseline_aeration_intensity_pct)} → {fmt(latest?.recommended_aeration_intensity_pct)}%</strong>
+              </div>
+              <div>
+                <span>药耗</span>
+                <strong>{fmt(latest?.baseline_chemical_dose_kgph)} → {fmt(latest?.recommended_chemical_dose_kgph)} kg/h</strong>
+              </div>
+              <div>
+                <span>目标函数改善</span>
+                <strong>{fmt(latest?.objective_improvement_pct, 3)}%</strong>
+              </div>
+            </div>
+            <p>{latest?.explanation || "等待推荐结果。"}</p>
+          </div>
+        </ChartPanel>
+      </section>
+
+      <section className="lowerGrid">
+        <section className="panel">
+          <header className="panelHeader"><Droplets size={18} /><h2>工况鲁棒性</h2></header>
+          <div className="scenarioRows">
+            {Object.entries(byScenario).map(([name, item]) => (
+              <div className="scenarioRow" key={name}>
+                <span>{name}</span>
+                <b>{fmt(item.objective_improvement_pct, 3)}%</b>
+                <em>可行率 {pct(item.feasible_rate)}</em>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel">
+          <header className="panelHeader"><Database size={18} /><h2>数据源状态</h2></header>
+          <div className="sourceList">
+            {Object.entries(summary?.sources || {}).map(([name, source]) => (
+              <div className="sourceItem" key={name}>
+                <span>{name}</span>
+                <b>{source.status}</b>
+                <em>{source.rows ? `${fmt(source.rows, 0)} rows` : source.url || source.error || "configured"}</em>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel aiPanel">
+          <header className="panelHeader"><Sparkles size={18} /><h2>{ai?.title || "运行分析摘要"}</h2></header>
+          <ul>
+            {(ai?.bullets || []).map((line) => <li key={line}>{line}</li>)}
+          </ul>
+          <div className="chips">
+            {(ai?.innovation || []).map((tag) => <span key={tag}>{tag}</span>)}
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(<App />);

@@ -9,6 +9,7 @@ __pycache__/
 *.pyd
 *.pkl
 *.pt
+*.tsbuildinfo
 
 # Frontend dependencies/build outputs
 node_modules/
