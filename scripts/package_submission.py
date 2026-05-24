@@ -42,6 +42,7 @@ INCLUDE_FILES = [
     "docs/final_scoring_matrix.md",
     "docs/literature_basis_table.md",
     "docs/system_integration_manual.md",
+    "docs/ui_dashboard_reference_resources.md",
     "docs/reflection_log.md",
     "outputs/dashboard_verified.png",
     "outputs/decision_benefit/decision_benefit_report.md",

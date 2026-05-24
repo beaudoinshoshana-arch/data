@@ -12,6 +12,7 @@
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   background:
     linear-gradient(180deg, rgba(13, 38, 44, 0.92), rgba(7, 19, 22, 0.98)),
     repeating-linear-gradient(90deg, rgba(93, 218, 210, 0.04) 0 1px, transparent 1px 80px),
@@ -23,9 +24,34 @@ select {
   font: inherit;
 }
 
+button,
+select,
+a {
+  touch-action: manipulation;
+}
+
 .screen {
   min-height: 100vh;
-  padding: 18px;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+}
+
+.skipLink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  transform: translateY(-160%);
+  border: 1px solid #73e0d6;
+  border-radius: 6px;
+  background: #09252b;
+  color: #f6ffff;
+  padding: 9px 12px;
+  text-decoration: none;
+  transition: transform 140ms ease;
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
 }
 
 .topbar {
@@ -58,19 +84,91 @@ h1 {
 
 .toolbar select,
 .toolbar button {
-  height: 38px;
+  min-height: 44px;
   border: 1px solid #2e6370;
   background: #102b32;
   color: #e7f4f6;
   border-radius: 6px;
   padding: 0 12px;
+  transition: border-color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
 }
 
 .toolbar button {
-  width: 40px;
+  width: 44px;
   display: grid;
   place-items: center;
   cursor: pointer;
+}
+
+.toolbar button:hover,
+.toolbar select:hover {
+  border-color: #67d6cf;
+  background: #143943;
+}
+
+.toolbar button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid #8ff2e8;
+  outline-offset: 3px;
+}
+
+.spin {
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.statusStrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.statusPill {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #1c4651;
+  border-radius: 8px;
+  background: rgba(9, 29, 34, 0.72);
+  padding: 10px 12px;
+}
+
+.statusPill span {
+  color: #91aebb;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.statusPill strong {
+  color: #eafffb;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .error {
@@ -97,6 +195,7 @@ h1 {
   background: rgba(12, 31, 36, 0.82);
   border-radius: 8px;
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+  min-width: 0;
 }
 
 .kpi {
@@ -133,6 +232,7 @@ h1 {
   font-size: 25px;
   line-height: 1.1;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .dashboardGrid {
@@ -143,7 +243,7 @@ h1 {
 
 .lowerGrid {
   display: grid;
-  grid-template-columns: 1fr 1.1fr 1.7fr;
+  grid-template-columns: 1.05fr 1.2fr 1.12fr 1.65fr;
   gap: 12px;
   margin-top: 12px;
 }
@@ -159,6 +259,7 @@ h1 {
   align-items: center;
   height: 28px;
   color: #6fd7ce;
+  min-width: 0;
 }
 
 .panelHeader h2 {
@@ -166,16 +267,21 @@ h1 {
   font-size: 15px;
   color: #dff4f6;
   font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chart {
   width: 100%;
   height: 220px;
+  min-height: 220px;
 }
 
 .smallChart {
   width: 100%;
   height: 190px;
+  min-height: 190px;
   margin-top: 8px;
 }
 
@@ -211,6 +317,8 @@ h1 {
 .recActions strong {
   color: #ffffff;
   font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .recommendBox p {
@@ -247,6 +355,7 @@ h1 {
 .scenarioRow b,
 .sourceItem b {
   color: #7ed957;
+  font-variant-numeric: tabular-nums;
 }
 
 .scenarioRow em,
@@ -281,6 +390,66 @@ h1 {
   font-size: 12px;
 }
 
+.modelPanel {
+  overflow: hidden;
+}
+
+.modelMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 10px;
+}
+
+.modelMeta span {
+  border: 1px solid #25515c;
+  border-radius: 5px;
+  background: rgba(21, 59, 68, 0.74);
+  color: #a8eee7;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.modelTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.modelTable th,
+.modelTable td {
+  border-bottom: 1px solid rgba(44, 91, 103, 0.74);
+  padding: 8px 6px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.modelTable th:first-child,
+.modelTable td:first-child {
+  text-align: left;
+}
+
+.modelTable thead th {
+  color: #91aebb;
+  font-weight: 600;
+}
+
+.modelTable tbody th {
+  color: #f2ffff;
+}
+
+.modelTable tbody td {
+  color: #cfe1e7;
+}
+
+.modelNote {
+  margin: 12px 0 0;
+  color: #a8bfca;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 @media (max-width: 1180px) {
   .kpiGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -291,7 +460,11 @@ h1 {
   }
 
   .lowerGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statusStrip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -311,15 +484,32 @@ h1 {
 
   .toolbar {
     display: grid;
-    grid-template-columns: 1fr 1fr 40px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
   }
 
   .kpiGrid,
-  .dashboardGrid {
+  .dashboardGrid,
+  .lowerGrid,
+  .statusStrip {
     grid-template-columns: 1fr;
   }
 
   .kpi {
     min-height: 90px;
+  }
+
+  .modelTable {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -23,6 +23,7 @@ type Summary = {
   model: {
     selected_surrogate: string;
     feature_count: number;
+    surrogate_test_targets: Record<string, TargetMetric>;
     safe_marl_mode: string;
     safe_marl_rows: number;
     safe_marl_by_scenario: Record<string, Record<string, number>>;
@@ -32,6 +33,16 @@ type Summary = {
   };
   latest_recommendation: Recommendation | null;
   reflection: Record<string, string>;
+};
+
+type TargetMetric = {
+  mae?: number;
+  rmse?: number;
+  r2?: number;
+  normalized_mae?: number;
+  predicted_compliance_rate?: number;
+  actual_compliance_rate?: number;
+  limit_upper?: number;
 };
 
 type Recommendation = {
@@ -61,6 +72,28 @@ type AiSummary = {
 };
 
 const API = "";
+const METRICS = ["COD", "NH3N", "TP", "TN"] as const;
+const SCENARIOS = ["", "observed", "load_up", "rain_dilution"];
+const TARGET_ORDER = [
+  "label_next_effluent_cod_mgL",
+  "label_next_effluent_nh3n_mgL",
+  "label_next_effluent_tp_mgL",
+  "label_next_effluent_tn_mgL",
+];
+
+type MetricCode = (typeof METRICS)[number];
+
+function getInitialMetric(): MetricCode {
+  if (typeof window === "undefined") return "COD";
+  const value = new URLSearchParams(window.location.search).get("metric")?.toUpperCase();
+  return METRICS.includes(value as MetricCode) ? (value as MetricCode) : "COD";
+}
+
+function getInitialScenario() {
+  if (typeof window === "undefined") return "";
+  const value = new URLSearchParams(window.location.search).get("scenario") || "";
+  return SCENARIOS.includes(value) ? value : "";
+}
 
 async function getData<T>(path: string): Promise<T> {
   const res = await fetch(`${API}${path}`);
@@ -79,6 +112,16 @@ function fmt(value?: number, digits = 2) {
 function pct(value?: number) {
   if (value === undefined || Number.isNaN(value)) return "-";
   return `${(value * 100).toFixed(1)}%`;
+}
+
+function targetLabel(key: string) {
+  const labels: Record<string, string> = {
+    label_next_effluent_cod_mgL: "COD",
+    label_next_effluent_nh3n_mgL: "NH3-N",
+    label_next_effluent_tp_mgL: "TP",
+    label_next_effluent_tn_mgL: "TN",
+  };
+  return labels[key] || key.replace("label_next_effluent_", "").replace("_mgL", "").toUpperCase();
 }
 
 function useChart(id: string, option: echarts.EChartsOption | null) {
@@ -100,7 +143,7 @@ function useChart(id: string, option: echarts.EChartsOption | null) {
 function Kpi({ icon, label, value, hint }: { icon: React.ReactNode; label: string; value: string; hint: string }) {
   return (
     <section className="kpi">
-      <div className="kpiIcon">{icon}</div>
+      <div className="kpiIcon" aria-hidden="true">{icon}</div>
       <div>
         <div className="kpiLabel">{label}</div>
         <div className="kpiValue">{value}</div>
@@ -114,7 +157,7 @@ function ChartPanel({ title, icon, id, children }: { title: string; icon: React.
   return (
     <section className="panel">
       <header className="panelHeader">
-        <span>{icon}</span>
+        <span aria-hidden="true">{icon}</span>
         <h2>{title}</h2>
       </header>
       {id ? <div id={id} className="chart" /> : children}
@@ -129,20 +172,22 @@ function App() {
   const [aerationSeries, setAerationSeries] = useState<any[]>([]);
   const [pacSeries, setPacSeries] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [metric, setMetric] = useState("COD");
-  const [scenario, setScenario] = useState("");
+  const [metric, setMetric] = useState<MetricCode>(getInitialMetric);
+  const [scenario, setScenario] = useState(getInitialScenario);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const load = async () => {
     setError("");
+    setLoading(true);
     try {
       const [summaryData, aiData, predData, aerData, pacData, recData] = await Promise.all([
         getData<Summary>("/api/summary"),
         getData<AiSummary>("/api/report/ai-summary"),
-        getData<{ series: any[] }>(`/api/timeseries?metric=${metric}&source=prediction`),
-        getData<{ series: any[] }>(`/api/timeseries?metric=AERATION&source=rl&scenario=${scenario}`),
-        getData<{ series: any[] }>(`/api/timeseries?metric=PAC&source=rl&scenario=${scenario}`),
-        getData<{ items: Recommendation[] }>(`/api/recommendations?limit=80${scenario ? `&scenario=${scenario}` : ""}`),
+        getData<{ series: any[] }>(`/api/timeseries?metric=${encodeURIComponent(metric)}&source=prediction`),
+        getData<{ series: any[] }>(`/api/timeseries?metric=AERATION&source=rl&scenario=${encodeURIComponent(scenario)}`),
+        getData<{ series: any[] }>(`/api/timeseries?metric=PAC&source=rl&scenario=${encodeURIComponent(scenario)}`),
+        getData<{ items: Recommendation[] }>(`/api/recommendations?limit=80${scenario ? `&scenario=${encodeURIComponent(scenario)}` : ""}`),
       ]);
       setSummary(summaryData);
       setAi(aiData);
@@ -152,8 +197,18 @@ function App() {
       setRecommendations(recData.items);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("metric", metric);
+    if (scenario) params.set("scenario", scenario);
+    else params.delete("scenario");
+    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}${window.location.hash}`);
+  }, [metric, scenario]);
 
   useEffect(() => {
     load();
@@ -274,16 +329,23 @@ function App() {
 
   const latest = recommendations[recommendations.length - 1] || summary?.latest_recommendation;
   const byScenario = summary?.model.safe_marl_by_scenario || {};
+  const targetRows = useMemo(
+    () =>
+      TARGET_ORDER.map((key) => [key, summary?.model.surrogate_test_targets?.[key]] as const).filter((row) => Boolean(row[1])),
+    [summary]
+  );
+  const sourceOkCount = Object.values(summary?.sources || {}).filter((source) => source.status === "ok").length;
 
   return (
     <main className="screen">
+      <a className="skipLink" href="#dashboard-content">跳转到监控内容</a>
       <header className="topbar">
         <div>
           <div className="eyebrow">Safe-MARL WWTP Control Center</div>
           <h1>污水厂曝气加药智能决策大屏</h1>
         </div>
         <div className="toolbar">
-          <select value={metric} onChange={(e) => setMetric(e.target.value)} aria-label="选择水质指标">
+          <select value={metric} onChange={(e) => setMetric(e.target.value as MetricCode)} aria-label="选择水质指标">
             <option value="COD">COD</option>
             <option value="NH3N">NH3-N</option>
             <option value="TP">TP</option>
@@ -295,15 +357,38 @@ function App() {
             <option value="load_up">冲击负荷</option>
             <option value="rain_dilution">雨水稀释</option>
           </select>
-          <button onClick={load} title="刷新数据">
-            <RefreshCcw size={18} />
+          <button onClick={load} title="刷新数据" aria-label="刷新数据" aria-busy={loading} disabled={loading}>
+            <RefreshCcw size={18} aria-hidden="true" className={loading ? "spin" : ""} />
           </button>
         </div>
       </header>
 
-      {error && <div className="error"><AlertTriangle size={18} /> {error}</div>}
+      <div className="srOnly" role="status" aria-live="polite">
+        {loading ? "正在刷新数据…" : error ? `数据加载失败：${error}` : summary ? "监控数据已更新。" : "等待监控数据加载…"}
+      </div>
 
-      <section className="kpiGrid">
+      <section className="statusStrip" aria-label="系统运行状态">
+        <div className="statusPill">
+          <span>安全经济模式</span>
+          <strong>{summary?.model.safe_marl_mode || "-"}</strong>
+        </div>
+        <div className="statusPill">
+          <span>推荐 P95</span>
+          <strong>{fmt(summary?.kpis.recommend_response_p95_ms, 1)} ms</strong>
+        </div>
+        <div className="statusPill">
+          <span>动作样本</span>
+          <strong>{fmt(summary?.model.safe_marl_rows, 0)}</strong>
+        </div>
+        <div className="statusPill">
+          <span>外部数据源</span>
+          <strong>{sourceOkCount}/{Object.keys(summary?.sources || {}).length || 0} ok</strong>
+        </div>
+      </section>
+
+      {error && <div className="error" role="alert"><AlertTriangle size={18} aria-hidden="true" /> {error}</div>}
+
+      <section className="kpiGrid" id="dashboard-content">
         <Kpi icon={<Database size={22} />} label="融合数据" value={fmt(summary?.kpis.fusion_rows, 0)} hint="本地 + 公开监测 + 外部适配" />
         <Kpi icon={<BrainCircuit size={22} />} label="决策样本" value={fmt(summary?.kpis.decision_rows, 0)} hint={`${fmt(summary?.model.feature_count, 0)} 个模型特征`} />
         <Kpi icon={<ShieldCheck size={22} />} label="安全可行率" value={pct(summary?.kpis.safe_marl_feasible_rate)} hint="RL 动作经过约束盾" />
@@ -345,7 +430,7 @@ function App() {
 
       <section className="lowerGrid">
         <section className="panel">
-          <header className="panelHeader"><Droplets size={18} /><h2>工况鲁棒性</h2></header>
+          <header className="panelHeader"><span aria-hidden="true"><Droplets size={18} /></span><h2>工况鲁棒性</h2></header>
           <div id="robustnessChart" className="smallChart" />
           <div className="scenarioRows">
             {Object.entries(byScenario).map(([name, item]) => (
@@ -358,8 +443,40 @@ function App() {
           </div>
         </section>
 
+        <section className="panel modelPanel">
+          <header className="panelHeader"><span aria-hidden="true"><Gauge size={18} /></span><h2>基准模型评估</h2></header>
+          <div className="modelMeta">
+            <span>{summary?.model.selected_surrogate || "-"} surrogate</span>
+            <span>{fmt(summary?.model.feature_count, 0)} features</span>
+          </div>
+          <table className="modelTable">
+            <caption className="srOnly">Stage-2 测试集分目标误差</caption>
+            <thead>
+              <tr>
+                <th scope="col">指标</th>
+                <th scope="col">MAE</th>
+                <th scope="col">RMSE</th>
+                <th scope="col">R²</th>
+                <th scope="col">达标</th>
+              </tr>
+            </thead>
+            <tbody>
+              {targetRows.map(([key, item]) => (
+                <tr key={key}>
+                  <th scope="row">{targetLabel(key)}</th>
+                  <td>{fmt(item?.mae, key.includes("_tp_") ? 3 : 2)}</td>
+                  <td>{fmt(item?.rmse, key.includes("_tp_") ? 3 : 2)}</td>
+                  <td>{fmt(item?.r2, 3)}</td>
+                  <td>{pct(item?.predicted_compliance_rate)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="modelNote">以 ExtraTrees 代理模型作为安全基线，RL 推荐和约束盾只在可解释预测边界内给出动作。</p>
+        </section>
+
         <section className="panel">
-          <header className="panelHeader"><Database size={18} /><h2>数据源状态</h2></header>
+          <header className="panelHeader"><span aria-hidden="true"><Database size={18} /></span><h2>数据源状态</h2></header>
           <div className="sourceList">
             {Object.entries(summary?.sources || {}).map(([name, source]) => (
               <div className="sourceItem" key={name}>
@@ -372,7 +489,7 @@ function App() {
         </section>
 
         <section className="panel aiPanel">
-          <header className="panelHeader"><Sparkles size={18} /><h2>{ai?.title || "运行分析摘要"}</h2></header>
+          <header className="panelHeader"><span aria-hidden="true"><Sparkles size={18} /></span><h2>{ai?.title || "运行分析摘要"}</h2></header>
           <ul>
             {(ai?.bullets || []).map((line) => <li key={line}>{line}</li>)}
           </ul>

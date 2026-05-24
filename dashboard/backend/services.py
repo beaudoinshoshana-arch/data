@@ -142,6 +142,7 @@ def dashboard_summary() -> dict[str, Any]:
         "model": {
             "selected_surrogate": stage2.get("selected_model"),
             "feature_count": stage2.get("feature_count"),
+            "surrogate_test_targets": stage2.get("test", {}).get("targets", {}),
             "safe_marl_mode": safe.get("mode"),
             "safe_marl_rows": safe.get("recommendation_rows"),
             "safe_marl_by_scenario": safe.get("by_scenario", {}),
