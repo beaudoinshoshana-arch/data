@@ -19,3 +19,4 @@ local_plant,TN,influent,4508,1,27.592100101375333,22.024611,34.154411,normal_ran
 local_plant,TP,effluent,4481,1,0.015635440749832627,0.00201,0.02701,normal_range_prior,train_validate_test
 local_plant,TP,influent,4508,1,0.5058394365572316,0.008345000000000002,2.34981,high_range_prior,train_validate_test
 local_plant,pH,effluent,4478,1,6.927329164805717,6.3585,7.32,normal_range_prior,train_validate_test
+us_wqp,pH,ambient_or_effluent,5,5,6.9799999999999995,6.0200000000000005,7.996,normal_range_prior,external_domain_generalization_check

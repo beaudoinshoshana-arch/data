@@ -104,40 +104,59 @@ def normalize_public_monitor(stage1_output: Path) -> pd.DataFrame:
     ].dropna(subset=["timestamp", "metric_code", "value"])
 
 
+def parse_wqp_response(text: str, url: str, max_rows: int) -> tuple[pd.DataFrame, dict[str, Any]]:
+    from io import StringIO
+
+    raw = pd.read_csv(StringIO(text), low_memory=False)
+    if raw.empty:
+        return pd.DataFrame(), {"status": "empty", "rows": 0, "url": url}
+    raw = raw.head(max_rows).copy()
+    time_col = "ActivityStartDate"
+    value_col = "ResultMeasureValue"
+    characteristic_col = "CharacteristicName"
+    if value_col not in raw.columns or characteristic_col not in raw.columns:
+        return pd.DataFrame(), {"status": "schema_mismatch", "columns": list(raw.columns)[:30], "url": url}
+    site_id = raw["MonitoringLocationIdentifier"].astype(str) if "MonitoringLocationIdentifier" in raw.columns else pd.Series(["unknown"] * len(raw))
+    site_name = raw["MonitoringLocationName"].astype(str) if "MonitoringLocationName" in raw.columns else site_id
+    unit = raw["ResultMeasure/MeasureUnitCode"].astype(str) if "ResultMeasure/MeasureUnitCode" in raw.columns else pd.Series(["unknown"] * len(raw))
+    out = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(raw.get(time_col), errors="coerce"),
+            "source_domain": "us_wqp",
+            "source_type": "epa_usgs_wqp_api",
+            "plant_id": site_id,
+            "plant_name": site_name,
+            "metric_code": raw[characteristic_col].map(WQP_CHARACTERISTIC_MAP).fillna(raw[characteristic_col].astype(str)),
+            "metric_role": "ambient_or_effluent",
+            "value": pd.to_numeric(raw[value_col], errors="coerce"),
+            "unit": unit,
+            "scenario_tag": "external_prior",
+            "quality_grade": "bronze",
+            "data_use": "domain_prior_and_robustness",
+        }
+    ).dropna(subset=["timestamp", "value"])
+    if out.empty:
+        return out, {"status": "empty_after_parse", "rows": 0, "url": url}
+    return out, {"status": "ok", "rows": int(len(out)), "url": url}
+
+
 def fetch_wqp(config: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any]]:
     if not config.get("enabled", False):
         return pd.DataFrame(), {"status": "disabled"}
+    attempts = [config.get("params", {})] + list(config.get("fallback_queries", []))
+    errors: list[dict[str, Any]] = []
     try:
-        response = requests.get(config["url"], params=config.get("params", {}), timeout=float(config.get("timeout_sec", 20)))
-        response.raise_for_status()
-        from io import StringIO
-
-        raw = pd.read_csv(StringIO(response.text), low_memory=False)
-        if raw.empty:
-            return pd.DataFrame(), {"status": "empty", "rows": 0, "url": response.url}
-        raw = raw.head(int(config.get("max_rows", 2000))).copy()
-        time_col = "ActivityStartDate"
-        value_col = "ResultMeasureValue"
-        characteristic_col = "CharacteristicName"
-        if value_col not in raw.columns or characteristic_col not in raw.columns:
-            return pd.DataFrame(), {"status": "schema_mismatch", "columns": list(raw.columns)[:30], "url": response.url}
-        out = pd.DataFrame(
-            {
-                "timestamp": pd.to_datetime(raw.get(time_col), errors="coerce"),
-                "source_domain": "us_wqp",
-                "source_type": "epa_usgs_wqp_api",
-                "plant_id": raw.get("MonitoringLocationIdentifier", "unknown").astype(str),
-                "plant_name": raw.get("MonitoringLocationName", raw.get("MonitoringLocationIdentifier", "WQP site")).astype(str),
-                "metric_code": raw[characteristic_col].map(WQP_CHARACTERISTIC_MAP).fillna(raw[characteristic_col].astype(str)),
-                "metric_role": "ambient_or_effluent",
-                "value": pd.to_numeric(raw[value_col], errors="coerce"),
-                "unit": raw.get("ResultMeasure/MeasureUnitCode", "unknown").astype(str),
-                "scenario_tag": "external_prior",
-                "quality_grade": "bronze",
-                "data_use": "domain_prior_and_robustness",
-            }
-        ).dropna(subset=["timestamp", "value"])
-        return out, {"status": "ok", "rows": int(len(out)), "url": response.url}
+        for params in attempts:
+            try:
+                response = requests.get(config["url"], params=params, timeout=float(config.get("timeout_sec", 20)))
+                response.raise_for_status()
+                out, status = parse_wqp_response(response.text, response.url, int(config.get("max_rows", 2000)))
+                if not out.empty:
+                    return out, {**status, "attempts": len(errors) + 1}
+                errors.append(status)
+            except Exception as exc:  # noqa: BLE001 - continue to fallback query.
+                errors.append({"status": "failed", "error": str(exc), "params": params})
+        return pd.DataFrame(), {"status": "failed", "attempts": len(attempts), "errors": errors}
     except Exception as exc:  # noqa: BLE001 - keep ETL resilient for offline demos.
         return pd.DataFrame(), {"status": "failed", "error": str(exc)}
 

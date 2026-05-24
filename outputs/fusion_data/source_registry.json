@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-24T14:00:40",
+  "generated_at": "2026-05-24T16:50:06",
   "sources": {
     "local_plant": {
       "status": "ok",
@@ -10,8 +10,10 @@
       "rows": 1275790
     },
     "wqp": {
-      "status": "failed",
-      "error": "HTTPSConnectionPool(host='www.waterqualitydata.us', port=443): Read timed out. (read timeout=20.0)"
+      "status": "ok",
+      "rows": 5,
+      "url": "https://www.waterqualitydata.us/data/Result/search?statecode=US%3A55&sampleMedia=Water&mimeType=csv&zip=no&sorted=no&startDateLo=01-01-2024&startDateHi=01-02-2024&characteristicName=pH",
+      "attempts": 3
     },
     "echo": {
       "status": "metadata_reference",
@@ -27,22 +29,23 @@
     "scenario_library": "D:\\part3data\\outputs\\fusion_data\\scenario_library.csv"
   },
   "summary": {
-    "fusion_rows": 1338694,
+    "fusion_rows": 1338699,
     "source_domains": {
       "china_public_monitor": 1275790,
-      "local_plant": 62904
+      "local_plant": 62904,
+      "us_wqp": 5
     },
     "metric_counts": {
       "COD": 320710,
       "NH3N": 319469,
       "TN": 234228,
       "TP": 233968,
-      "pH": 205726,
+      "pH": 205731,
       "FLOW": 11118,
       "MLSS": 4505,
       "DO": 4493,
       "TEMP": 4477
     },
-    "scenario_rows": 20
+    "scenario_rows": 21
   }
 }
