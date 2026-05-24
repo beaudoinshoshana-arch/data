@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-05-24T17:19:13",
+  "policy": "Safe-MARL policy plus safety/objective arbitration",
+  "current_control_baseline": {
+    "rows": 2046,
+    "feasible_rate": 1.0,
+    "predicted_compliance_rate": 1.0,
+    "fallback_rate": 0.0,
+    "objective_improvement_pct": 25.050580803291805,
+    "energy_saving_vs_current_pct": 38.66545172174733,
+    "chemical_saving_vs_current_pct": 69.62756172463189,
+    "mean_response_ms": 1.720142668462017,
+    "p95_response_ms": 1.8855250091291964,
+    "max_response_ms": 3.039100003661588
+  },
+  "traditional_fixed_baseline": {
+    "definition": "Training-period P90 conservative manual setpoints for continuous operation.",
+    "fixed_aeration_intensity_pct": 57.666375234520004,
+    "fixed_pac_mgL": 18.4431,
+    "recommended_aeration_mean_pct": 31.725655799682265,
+    "recommended_chemical_mean_kgph": 3.50171900050724,
+    "fixed_chemical_mean_kgph": 31.739271347236283,
+    "energy_saving_pct": 44.984133872366606,
+    "chemical_saving_pct": 88.96723569297644
+  },
+  "by_scenario": {
+    "load_up": {
+      "rows": 682,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 22.68486922841317,
+      "energy_saving_vs_current_pct": 36.8254187921585,
+      "chemical_saving_vs_current_pct": 70.09757021143574,
+      "mean_response_ms": 1.509538123015754,
+      "p95_response_ms": 1.5737799942144193,
+      "max_response_ms": 2.7225999801885337
+    },
+    "observed": {
+      "rows": 682,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 25.71708285074535,
+      "energy_saving_vs_current_pct": 39.60139000835358,
+      "chemical_saving_vs_current_pct": 69.49679158228615,
+      "mean_response_ms": 1.829024779735286,
+      "p95_response_ms": 1.9199399815988727,
+      "max_response_ms": 2.878500003134832
+    },
+    "rain_dilution": {
+      "rows": 682,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 26.749790330716888,
+      "energy_saving_vs_current_pct": 39.71114547108465,
+      "chemical_saving_vs_current_pct": 69.28561309243929,
+      "mean_response_ms": 1.821865102635011,
+      "p95_response_ms": 1.9026900234166533,
+      "max_response_ms": 3.039100003661588
+    }
+  },
+  "robustness": {
+    "device_fluctuation": {
+      "rows": 240,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 27.431085075190474,
+      "energy_saving_vs_current_pct": 39.76565382105949,
+      "chemical_saving_vs_current_pct": 67.17745052672308,
+      "mean_response_ms": 1.7224570828451153,
+      "p95_response_ms": 1.882189983734861,
+      "max_response_ms": 2.567299990914762
+    },
+    "monitoring_noise": {
+      "rows": 240,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 27.418933060487632,
+      "energy_saving_vs_current_pct": 39.73904234300238,
+      "chemical_saving_vs_current_pct": 67.17548967560593,
+      "mean_response_ms": 1.7576741658558603,
+      "p95_response_ms": 1.978494993818457,
+      "max_response_ms": 2.383500017458573
+    },
+    "sensor_flatline": {
+      "rows": 240,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 27.4188974710338,
+      "energy_saving_vs_current_pct": 39.73896613588468,
+      "chemical_saving_vs_current_pct": 67.17730048071773,
+      "mean_response_ms": 1.7348887504340382,
+      "p95_response_ms": 1.9229249897762195,
+      "max_response_ms": 2.30239998199977
+    },
+    "test_set": {
+      "rows": 2046,
+      "feasible_rate": 1.0,
+      "predicted_compliance_rate": 1.0,
+      "fallback_rate": 0.0,
+      "objective_improvement_pct": 25.050580803291805,
+      "energy_saving_vs_current_pct": 38.66545172174733,
+      "chemical_saving_vs_current_pct": 69.62756172463189,
+      "mean_response_ms": 1.720142668462017,
+      "p95_response_ms": 1.8855250091291964,
+      "max_response_ms": 3.039100003661588
+    }
+  },
+  "response_time": {
+    "requirement_sec": 1.0,
+    "mean_ms": 1.7248795008914282,
+    "p95_ms": 1.9029250033781864,
+    "max_ms": 3.039100003661588,
+    "pass": true
+  },
+  "reflection": {
+    "result": "Decision benefit is now reported against current plant controls and a conservative traditional fixed baseline.",
+    "risk": "P90 fixed baseline is a defensible manual-control proxy, not a measured operator trial.",
+    "improvement": "A future plant pilot should log actual manual setpoints and closed-loop actuator feedback for direct A/B validation.",
+    "next_step": "Use the benefit summary in the dashboard KPI, completion audit, and competition report."
+  }
+}

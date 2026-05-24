@@ -57,11 +57,16 @@ outputs/paper_repro_integrated_control/*
 outputs/fusion_data/*
 !outputs/fusion_data/source_registry.json
 !outputs/fusion_data/scenario_library.csv
+!outputs/decision_benefit/
+outputs/decision_benefit/*
+!outputs/decision_benefit/decision_benefit_summary.json
+!outputs/decision_benefit/decision_benefit_report.md
 !outputs/safe_marl/
 outputs/safe_marl/*
 !outputs/safe_marl/summary.json
 !outputs/safe_marl/training_curve.csv
 !outputs/safe_marl/rl_recommendations_test.csv
+!outputs/safe_marl/model_card.md
 
 # Logs and local scratch
 *.log

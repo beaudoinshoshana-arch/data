@@ -38,6 +38,7 @@ const stage2 = readJson("outputs/stage2_model/summary.json");
 const fusion = readJson("outputs/fusion_data/source_registry.json");
 const safe = readJson("outputs/safe_marl/summary.json");
 const paper = readJson("outputs/paper_repro_integrated_control/summary.json");
+const benefit = readJson("outputs/decision_benefit/decision_benefit_summary.json");
 
 function fmt(value, digits = 2) {
   if (value === undefined || value === null || Number.isNaN(Number(value))) return "-";
@@ -107,7 +108,10 @@ const kpis = [
   ["测试综合误差", fmt(stage2.test?.weighted_normalized_mae, 3), "污染物重要性加权归一化 MAE"],
   ["预测达标率", `${fmt((stage2.test?.overall_compliance?.predicted_rate || 0) * 100, 1)}%`, "COD/NH3-N/TP/TN 四目标"],
   ["Safe-MARL 可行率", `${fmt((safe.feasible_rate || 0) * 100, 1)}%`, "所有动作经过安全盾"],
-  ["动态控制节能", `${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%`, "论文复现链路动态回放对照"],
+  ["当前控制节能/节药", `${fmt(safe.mean_energy_saving_vs_current_pct, 2)}% / ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%`, "安全仲裁后最终推荐"],
+  ["传统定值节能/节药", `${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}% / ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%`, "训练期 P90 保守定值对照"],
+  ["P95 响应时间", `${fmt(benefit.response_time?.p95_ms, 1)} ms`, "单组推荐响应 ≤1s"],
+  ["论文复现动态节能", `${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%`, "Water Research 方法链复现对照"],
 ];
 
 const markdown = `# 污水厂曝气加药智能决策开发参赛报告
@@ -129,7 +133,15 @@ const markdown = `# 污水厂曝气加药智能决策开发参赛报告
 
 ## 4. 安全约束与决策闭环
 
-所有 RL 推荐动作先进入安全盾，检查曝气强度上下限、PAC 投加上下限、单次最大调节步长和出水合规风险。若动作不可行，系统回退到局部有界专家搜索。大屏同时显示 reward 分解、可行率、回退率和中文动作解释。
+所有 RL 推荐动作先进入安全盾，检查曝气强度上下限、PAC 投加上下限、单次最大调节步长和出水合规风险。随后进入“安全 + 目标函数”仲裁层：若 RL 动作不可行，或局部有界专家搜索能给出更优的合规动作，则回退到专家动作。大屏同时显示 reward 分解、可行率、回退率和中文动作解释。
+
+核心目标函数可写为：
+
+\\[
+J = w_q R_{water} + w_e E_{aeration} + w_c C_{PAC} + w_s S_{smooth} + w_v V_{violation}
+\\]
+
+系统最小化 \\(J\\)，并将 reward 定义为 \\(-J\\)。其中 \\(V_{violation}\\) 对 COD、NH3-N、TP、TN 超限进行高权重惩罚，保证节能节药只在达标边界内发生。
 
 ## 5. 系统实现
 
@@ -140,6 +152,9 @@ const markdown = `# 污水厂曝气加药智能决策开发参赛报告
 - 测试集综合归一化 MAE：${fmt(stage2.test?.weighted_normalized_mae, 3)}。
 - 预测达标率：${fmt((stage2.test?.overall_compliance?.predicted_rate || 0) * 100, 1)}%。
 - Safe-MARL 推荐可行率：${fmt((safe.feasible_rate || 0) * 100, 1)}%。
+- 相对当前控制：曝气节能 ${fmt(safe.mean_energy_saving_vs_current_pct, 2)}%，PAC 节药 ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%。
+- 相对传统保守定值：曝气节能 ${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}%，PAC 节药 ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%。
+- 单组推荐响应：P95 ${fmt(benefit.response_time?.p95_ms, 1)} ms，最大 ${fmt(benefit.response_time?.max_ms, 1)} ms。
 - 论文复现动态回放节能：${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%。
 
 ## 7. 创新点
@@ -171,7 +186,8 @@ const children = [
   p(`监督代理模型采用 ${stage2.selected_model || "-"}，共 ${stage2.feature_count || "-"} 个特征，用于同时预测下一小时 COD、NH3-N、TP 和 TN。`),
   p("Safe-MARL 采用曝气智能体与投药智能体协同输出动作，共享出水风险、曝气能耗、药耗、平滑性和约束违规 reward。"),
   h1("4. 安全约束与决策闭环"),
-  p("所有 RL 推荐动作先进入安全盾，检查曝气强度上下限、PAC 投加上下限、单次最大调节步长和出水合规风险。若动作不可行，系统回退到局部有界专家搜索。"),
+  p("所有 RL 推荐动作先进入安全盾，检查曝气强度上下限、PAC 投加上下限、单次最大调节步长和出水合规风险。随后进入安全与目标函数仲裁层：若 RL 动作不可行，或局部有界专家搜索能给出更优的合规动作，则回退到专家动作。"),
+  p("核心目标函数：J = wq * 水质风险 + we * 曝气能耗 + wc * PAC药耗 + ws * 平滑项 + wv * 违规惩罚；系统最小化 J，并将 reward 定义为 -J。"),
   h1("5. 系统实现"),
   p("后端采用 FastAPI，前端采用 React + ECharts。系统提供摘要、时序、推荐、单点推理、RL 推荐和 AI 摘要接口。"),
   h2("核心指标"),
@@ -180,6 +196,9 @@ const children = [
   bullet(`测试集综合归一化 MAE 为 ${fmt(stage2.test?.weighted_normalized_mae, 3)}。`),
   bullet(`预测达标率为 ${fmt((stage2.test?.overall_compliance?.predicted_rate || 0) * 100, 1)}%。`),
   bullet(`Safe-MARL 推荐可行率为 ${fmt((safe.feasible_rate || 0) * 100, 1)}%。`),
+  bullet(`相对当前控制，曝气节能 ${fmt(safe.mean_energy_saving_vs_current_pct, 2)}%，PAC 节药 ${fmt(safe.mean_chemical_saving_vs_current_pct, 2)}%。`),
+  bullet(`相对传统保守定值，曝气节能 ${fmt(benefit.traditional_fixed_baseline?.energy_saving_pct, 2)}%，PAC 节药 ${fmt(benefit.traditional_fixed_baseline?.chemical_saving_pct, 2)}%。`),
+  bullet(`单组推荐响应 P95 为 ${fmt(benefit.response_time?.p95_ms, 1)} ms，最大 ${fmt(benefit.response_time?.max_ms, 1)} ms。`),
   bullet(`论文复现动态回放节能为 ${fmt(paper.phase4_dynamic_replay?.dynamic_energy_saving_pct, 2)}%。`),
   h1("7. 创新点"),
   bullet("外部数据深度融合但保持监督训练域隔离，避免跨域混训风险。"),
@@ -189,7 +208,9 @@ const children = [
   bullet("大屏将预测、推荐、reward、数据源、工况鲁棒性和报告摘要放在同一操作界面。"),
 ];
 
-const screenshot = path.join(outputsDir, "dashboard_fullpage.png");
+const verifiedScreenshot = path.join(outputsDir, "dashboard_verified.png");
+const fallbackScreenshot = path.join(outputsDir, "dashboard_fullpage.png");
+const screenshot = fs.existsSync(verifiedScreenshot) ? verifiedScreenshot : fallbackScreenshot;
 if (fs.existsSync(screenshot)) {
   children.push(h1("8. 可视化大屏截图"));
   children.push(

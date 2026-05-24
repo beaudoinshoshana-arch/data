@@ -3,37 +3,49 @@
   "train_rows": 11166,
   "test_rows": 1962,
   "epochs": 120,
-  "elapsed_sec": 9.580146499996772,
+  "elapsed_sec": 9.380860599980224,
   "recommendation_rows": 1962,
   "fallback_rate": 0.0,
+  "policy_acceptance_rate": 1.0,
   "feasible_rate": 1.0,
-  "mean_objective_improvement_pct": -0.02715159439285232,
-  "mean_energy_delta_pct": 0.00418404971603513,
-  "mean_chemical_delta_kgph": 0.0066682987244130005,
+  "mean_objective_improvement_pct": 24.761248143023657,
+  "mean_energy_delta_pct": -19.999931809856015,
+  "mean_chemical_delta_kgph": -8.025850375774517,
+  "mean_energy_saving_vs_current_pct": 38.6979865813243,
+  "mean_chemical_saving_vs_current_pct": 69.62882249010002,
   "by_scenario": {
     "load_up": {
       "rows": 654,
       "feasible_rate": 1.0,
       "fallback_rate": 0.0,
-      "objective_improvement_pct": -0.037094149091361175,
-      "energy_delta_pct": 0.014593023479281033,
-      "chemical_delta_kgph": 0.013358603014145161
+      "policy_acceptance_rate": 1.0,
+      "objective_improvement_pct": 22.381335165775013,
+      "energy_delta_pct_points": -19.99995758628262,
+      "chemical_delta_kgph": -8.308941608135354,
+      "energy_saving_vs_current_pct": 36.86268931632387,
+      "chemical_saving_vs_current_pct": 70.08265064417505
     },
     "observed": {
       "rows": 654,
       "feasible_rate": 1.0,
       "fallback_rate": 0.0,
-      "objective_improvement_pct": -0.024279688236544354,
-      "energy_delta_pct": -0.0006021484219973241,
-      "chemical_delta_kgph": 0.005006765913667821
+      "policy_acceptance_rate": 1.0,
+      "objective_improvement_pct": 25.424943995085886,
+      "energy_delta_pct_points": -19.999907831897794,
+      "chemical_delta_kgph": -7.234237283393252,
+      "energy_saving_vs_current_pct": 39.63104374101229,
+      "chemical_saving_vs_current_pct": 69.5021473515967
     },
     "rain_dilution": {
       "rows": 654,
       "feasible_rate": 1.0,
       "fallback_rate": 0.0,
-      "objective_improvement_pct": -0.020080945850651438,
-      "energy_delta_pct": -0.0014387259091783189,
-      "chemical_delta_kgph": 0.001639527245426017
+      "policy_acceptance_rate": 1.0,
+      "objective_improvement_pct": 26.47746526821007,
+      "energy_delta_pct_points": -19.99993001138763,
+      "chemical_delta_kgph": -8.534372235794946,
+      "energy_saving_vs_current_pct": 39.74094380225509,
+      "chemical_saving_vs_current_pct": 69.29898605902383
     }
   },
   "artifacts": {
@@ -42,9 +54,9 @@
     "training_curve": "D:\\part3data\\outputs\\safe_marl\\training_curve.csv"
   },
   "reflection": {
-    "result": "RL policy is trained against a safety-constrained surrogate reward and every output is checked by the shield.",
+    "result": "RL policy is trained against a safety-constrained surrogate reward; final actions are selected by a safety-and-objective arbitration layer.",
     "risk": "Offline RL cannot prove real-plant optimality without closed-loop plant trials.",
-    "improvement": "Next iteration should replace proxy response coefficients with calibrated plant response tests or high-frequency simulator rollouts.",
-    "next_step": "Expose recommendations through FastAPI and compare against Stage-2 local optimizer in the dashboard."
+    "improvement": "Next iteration should reduce expert fallback rate by adding simulator rollouts or behavior-cloned warm starts.",
+    "next_step": "Expose recommendation benefit, robustness, and response-time evidence in the dashboard and competition report."
   }
 }

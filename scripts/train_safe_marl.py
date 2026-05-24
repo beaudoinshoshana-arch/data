@@ -174,9 +174,15 @@ def evaluate_policy(
         baseline_reward = reward_components(row, baseline_action, config)
         grid = grid_search_recommendation(row, config)
         rl_underperformed = bool(rl_reward["reward"] < baseline_reward["reward"])
-        used_fallback = bool(not rl_reward["is_feasible"])
+        expert_better = bool(grid["reward"] > rl_reward["reward"] + 1e-9)
+        used_fallback = bool(not rl_reward["is_feasible"] or expert_better)
         final = grid if used_fallback else {**rl_action, **rl_reward}
-        fallback_reason = "grid_safe_expert" if used_fallback else "rl_policy_accepted"
+        if not rl_reward["is_feasible"]:
+            fallback_reason = "grid_safe_expert_infeasible"
+        elif expert_better:
+            fallback_reason = "grid_safe_expert_better_objective"
+        else:
+            fallback_reason = "rl_policy_accepted"
         baseline_kg = float(baseline_action["baseline_chemical_dose_kgph"])
         rec_kg = float(final["recommended_chemical_dose_kgph"])
         rec = {
@@ -189,8 +195,11 @@ def evaluate_policy(
             "rl_underperformed_baseline": rl_underperformed,
             "baseline_reward": baseline_reward["reward"],
             "rl_reward": rl_reward["reward"],
+            "grid_reward": grid["reward"],
             "final_reward": final["reward"],
             "baseline_objective": baseline_reward["objective"],
+            "rl_objective": rl_reward["objective"],
+            "grid_objective": grid["objective"],
             "final_objective": final["objective"],
             "baseline_aeration_intensity_pct": baseline_action["baseline_aeration_intensity_pct"],
             "recommended_aeration_intensity_pct": final["recommended_aeration_intensity_pct"],
@@ -214,6 +223,20 @@ def evaluate_policy(
             rec[f"{target}_upper_limit"] = TARGET_LIMITS[target]
         records.append(rec)
     return pd.DataFrame(records)
+
+
+def aggregate_recommendations(frame: pd.DataFrame) -> dict[str, float]:
+    baseline_aer = frame["baseline_aeration_intensity_pct"].mean()
+    recommended_aer = frame["recommended_aeration_intensity_pct"].mean()
+    baseline_kg = frame["baseline_chemical_dose_kgph"].mean()
+    recommended_kg = frame["recommended_chemical_dose_kgph"].mean()
+    return {
+        "objective_improvement_pct": float(frame["objective_improvement_pct"].mean()),
+        "energy_delta_pct_points": float(frame["energy_delta_pct"].mean()),
+        "chemical_delta_kgph": float(frame["chemical_delta_kgph"].mean()),
+        "energy_saving_vs_current_pct": float((baseline_aer - recommended_aer) / max(baseline_aer, 1e-9) * 100.0),
+        "chemical_saving_vs_current_pct": float((baseline_kg - recommended_kg) / max(baseline_kg, 1e-9) * 100.0),
+    }
 
 
 def main() -> None:
@@ -273,18 +296,20 @@ def main() -> None:
         "elapsed_sec": float(elapsed),
         "recommendation_rows": int(len(recommendations)),
         "fallback_rate": float(recommendations["used_fallback"].mean()),
+        "policy_acceptance_rate": float(1.0 - recommendations["used_fallback"].mean()),
         "feasible_rate": float(recommendations["is_feasible"].mean()),
-        "mean_objective_improvement_pct": float(recommendations["objective_improvement_pct"].mean()),
-        "mean_energy_delta_pct": float(recommendations["energy_delta_pct"].mean()),
-        "mean_chemical_delta_kgph": float(recommendations["chemical_delta_kgph"].mean()),
+        "mean_objective_improvement_pct": aggregate_recommendations(recommendations)["objective_improvement_pct"],
+        "mean_energy_delta_pct": aggregate_recommendations(recommendations)["energy_delta_pct_points"],
+        "mean_chemical_delta_kgph": aggregate_recommendations(recommendations)["chemical_delta_kgph"],
+        "mean_energy_saving_vs_current_pct": aggregate_recommendations(recommendations)["energy_saving_vs_current_pct"],
+        "mean_chemical_saving_vs_current_pct": aggregate_recommendations(recommendations)["chemical_saving_vs_current_pct"],
         "by_scenario": {
             scenario: {
                 "rows": int(len(group)),
                 "feasible_rate": float(group["is_feasible"].mean()),
                 "fallback_rate": float(group["used_fallback"].mean()),
-                "objective_improvement_pct": float(group["objective_improvement_pct"].mean()),
-                "energy_delta_pct": float(group["energy_delta_pct"].mean()),
-                "chemical_delta_kgph": float(group["chemical_delta_kgph"].mean()),
+                "policy_acceptance_rate": float(1.0 - group["used_fallback"].mean()),
+                **aggregate_recommendations(group),
             }
             for scenario, group in recommendations.groupby("scenario_tag")
         },
@@ -294,13 +319,50 @@ def main() -> None:
             "training_curve": str(args.output / "training_curve.csv"),
         },
         "reflection": {
-            "result": "RL policy is trained against a safety-constrained surrogate reward and every output is checked by the shield.",
+            "result": "RL policy is trained against a safety-constrained surrogate reward; final actions are selected by a safety-and-objective arbitration layer.",
             "risk": "Offline RL cannot prove real-plant optimality without closed-loop plant trials.",
-            "improvement": "Next iteration should replace proxy response coefficients with calibrated plant response tests or high-frequency simulator rollouts.",
-            "next_step": "Expose recommendations through FastAPI and compare against Stage-2 local optimizer in the dashboard.",
+            "improvement": "Next iteration should reduce expert fallback rate by adding simulator rollouts or behavior-cloned warm starts.",
+            "next_step": "Expose recommendation benefit, robustness, and response-time evidence in the dashboard and competition report.",
         },
     }
     (args.output / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    model_card = f"""# Safe-MARL 决策层模型卡
+
+## 模型用途
+
+本模型用于污水厂曝气强度和 PAC 投加量的离线推荐。曝气 agent 输出曝气调节量，投药 agent 输出 PAC 调节量；最终动作需经过安全盾和目标函数仲裁后才能展示或对接自控系统。
+
+## 输入与输出
+
+- 输入：COD、BOD、氨氮、总磷、流量、DO、MLSS、当前曝气强度、当前 PAC 投加量。
+- 输出：推荐曝气强度、推荐 PAC 投加量、预测出水风险、reward 分解、可行性、回退原因和中文动作解释。
+
+## 训练与评估数据
+
+- 训练/验证样本：{summary["train_rows"]:,} 行。
+- 测试推荐样本：{summary["recommendation_rows"]:,} 行。
+- 工况：observed、load_up、rain_dilution。
+
+## 关键指标
+
+- 安全可行率：{summary["feasible_rate"]:.1%}。
+- 目标函数改善：{summary["mean_objective_improvement_pct"]:.2f}%。
+- 相对当前控制曝气节能：{summary["mean_energy_saving_vs_current_pct"]:.2f}%。
+- 相对当前控制 PAC 节药：{summary["mean_chemical_saving_vs_current_pct"]:.2f}%。
+- 策略直接接受率：{summary["policy_acceptance_rate"]:.1%}。
+
+## 安全机制
+
+1. 动作边界：曝气强度、PAC 投加量均受设备上下限约束。
+2. 单步限制：单次调节不得超过配置文件中的最大步长。
+3. 合规风险：COD、NH3-N、TP、TN 超限会进入高权重违规惩罚。
+4. 目标仲裁：若 RL 动作不可行，或局部专家搜索在同一目标函数下更优，则展示专家安全动作。
+
+## 适用边界
+
+本模型是基于历史数据、场景扩增和工程代理响应函数的离线推荐层，不能替代现场闭环试验。正式接入 PLC/SCADA 前，应在旁路模式运行，记录操作员接受率、真实执行反馈和出水变化，再进行参数复标定。
+"""
+    (args.output / "model_card.md").write_text(model_card, encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

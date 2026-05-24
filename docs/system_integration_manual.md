@@ -14,7 +14,7 @@ http://127.0.0.1:8000
 GET /api/summary
 ```
 
-返回数据规模、模型指标、Safe-MARL 可行率、最新推荐和数据源状态。
+返回数据规模、模型指标、Safe-MARL 可行率、节能节药收益、响应时间、最新推荐和数据源状态。
 
 ## 2. 时序曲线
 
@@ -61,8 +61,9 @@ POST /api/rl/recommend
 
 请求体同 `/api/infer`。返回内容包括：
 
-- `mode`：`safe_marl_policy` 或 `grid_safe_expert_fallback`。
+- `mode`：`safe_marl_policy`、`grid_safe_expert_better_objective` 或 `grid_safe_expert_fallback`。
 - `raw_policy_delta`：RL 原始动作增量。
+- `reward_compare`：当前基线、RL、专家搜索和最终动作的 reward 对比。
 - `recommendation`：安全盾后的可执行动作。
 - `explanation`：中文动作解释。
 

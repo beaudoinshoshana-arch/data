@@ -14,6 +14,9 @@ def test_dashboard_api_contracts() -> None:
     ]:
         response = client.get(path)
         assert response.status_code == 200
+    summary = client.get("/api/summary").json()["data"]
+    assert summary["kpis"]["fixed_energy_saving_pct"] >= 10.0
+    assert summary["kpis"]["recommend_response_p95_ms"] < 1000.0
 
     state = {
         "scenario_tag": "load_up",

@@ -88,6 +88,7 @@ def records(frame: pd.DataFrame, limit: int = 600) -> list[dict[str, Any]]:
     return slim.replace({np.nan: None}).to_dict(orient="records")
 
 
+@lru_cache(maxsize=1)
 def load_policy() -> tuple[DualAgentPolicy | None, dict[str, Any] | None]:
     path = ROOT / "outputs" / "safe_marl" / "safe_marl_policy.pt"
     if not path.exists():
@@ -111,6 +112,7 @@ def dashboard_summary() -> dict[str, Any]:
     stage1 = read_json(ROOT / "outputs" / "stage1_data" / "reports" / "stage1_summary.json", {})
     stage2 = read_json(ROOT / "outputs" / "stage2_model" / "summary.json", {})
     safe = read_json(ROOT / "outputs" / "safe_marl" / "summary.json", {})
+    benefit = read_json(ROOT / "outputs" / "decision_benefit" / "decision_benefit_summary.json", {})
     fusion = read_json(ROOT / "outputs" / "fusion_data" / "source_registry.json", {})
     paper = read_json(ROOT / "outputs" / "paper_repro_integrated_control" / "summary.json", {})
     rec = read_csv_cached(str(ROOT / "outputs" / "safe_marl" / "rl_recommendations_test.csv"))
@@ -128,6 +130,11 @@ def dashboard_summary() -> dict[str, Any]:
             "stage2_compliance_rate": finite(stage2.get("test", {}).get("overall_compliance", {}).get("predicted_rate")),
             "safe_marl_feasible_rate": finite(safe.get("feasible_rate")),
             "safe_marl_fallback_rate": finite(safe.get("fallback_rate")),
+            "safe_marl_energy_saving_vs_current_pct": finite(safe.get("mean_energy_saving_vs_current_pct")),
+            "safe_marl_chemical_saving_vs_current_pct": finite(safe.get("mean_chemical_saving_vs_current_pct")),
+            "fixed_energy_saving_pct": finite(benefit.get("traditional_fixed_baseline", {}).get("energy_saving_pct")),
+            "fixed_chemical_saving_pct": finite(benefit.get("traditional_fixed_baseline", {}).get("chemical_saving_pct")),
+            "recommend_response_p95_ms": finite(benefit.get("response_time", {}).get("p95_ms")),
             "dynamic_energy_saving_pct": finite(paper.get("phase4_dynamic_replay", {}).get("dynamic_energy_saving_pct")),
             "dynamic_mean_execution_sec": finite(paper.get("phase4_dynamic_replay", {}).get("mean_control_execution_sec")),
         },
@@ -139,6 +146,7 @@ def dashboard_summary() -> dict[str, Any]:
             "safe_marl_rows": safe.get("recommendation_rows"),
             "safe_marl_by_scenario": safe.get("by_scenario", {}),
         },
+        "evaluation": benefit,
         "latest_recommendation": latest[0] if latest else None,
         "reflection": safe.get("reflection", {}),
     }
@@ -220,15 +228,27 @@ def recommend_with_policy(state: dict[str, Any]) -> dict[str, Any]:
         aer_delta, pac_delta = policy(x)
     action = shield.apply(state, float(aer_delta.item()), float(pac_delta.item()))
     reward = reward_components(state, action, cfg)
+    grid = grid_search_recommendation(state, cfg)
     if not reward["is_feasible"]:
         final = grid_search_recommendation(state, cfg)
         mode = "grid_safe_expert_fallback"
+    elif grid["reward"] > reward["reward"] + 1e-9:
+        final = grid
+        mode = "grid_safe_expert_better_objective"
     else:
         final = {**action, **reward}
         mode = "safe_marl_policy"
+    baseline = shield.apply(state, 0.0, 0.0)
+    baseline_reward = reward_components(state, baseline, cfg)
     return {
         "mode": mode,
         "raw_policy_delta": {"aeration_delta_pct": float(aer_delta.item()), "pac_delta_mgL": float(pac_delta.item())},
+        "reward_compare": {
+            "baseline_reward": baseline_reward["reward"],
+            "rl_reward": reward["reward"],
+            "grid_reward": grid["reward"],
+            "final_reward": final["reward"],
+        },
         "recommendation": final,
         "explanation": explain_action(state, final),
     }
@@ -241,7 +261,8 @@ def ai_summary() -> dict[str, Any]:
         "系统已形成单厂真实数据、国内公开监测数据和外部数据适配器的融合数据底座。",
         f"当前融合长表约 {kpis['fusion_rows']:,} 条，决策样本 {kpis['decision_rows']:,} 条。",
         f"监督代理模型测试集综合归一化 MAE 为 {kpis['stage2_test_weighted_mae']:.3f}，预测达标率 {kpis['stage2_compliance_rate']:.1%}。",
-        f"Safe-MARL 推荐通过安全盾后可行率 {kpis['safe_marl_feasible_rate']:.1%}，动态复现链路节能 {kpis['dynamic_energy_saving_pct']:.2f}%。",
+        f"Safe-MARL 推荐通过安全盾后可行率 {kpis['safe_marl_feasible_rate']:.1%}，相对当前控制节能 {kpis['safe_marl_energy_saving_vs_current_pct']:.2f}%、节药 {kpis['safe_marl_chemical_saving_vs_current_pct']:.2f}%。",
+        f"相对传统保守定值策略，曝气能耗降低 {kpis['fixed_energy_saving_pct']:.2f}%、PAC 药耗降低 {kpis['fixed_chemical_saving_pct']:.2f}%，P95 决策响应 {kpis['recommend_response_p95_ms']:.1f} ms。",
         "建议答辩时强调：RL 是安全约束下的推荐层，真实执行前仍经过边界裁剪、步长约束和局部专家回退。",
     ]
     return {

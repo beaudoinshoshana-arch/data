@@ -27,6 +27,9 @@ type Summary = {
     safe_marl_rows: number;
     safe_marl_by_scenario: Record<string, Record<string, number>>;
   };
+  evaluation?: {
+    robustness?: Record<string, Record<string, number>>;
+  };
   latest_recommendation: Recommendation | null;
   reflection: Record<string, string>;
 };
@@ -233,9 +236,41 @@ function App() {
     };
   }, [recommendations]);
 
+  const robustnessOption = useMemo<echarts.EChartsOption | null>(() => {
+    const robustness = summary?.evaluation?.robustness || {};
+    const rows = Object.entries(robustness);
+    if (!rows.length) return null;
+    const metrics = [
+      ["feasible_rate", "可行率"],
+      ["predicted_compliance_rate", "达标率"],
+      ["energy_saving_vs_current_pct", "曝气节能"],
+      ["chemical_saving_vs_current_pct", "PAC节药"],
+    ] as const;
+    const data = rows.flatMap(([_, item], y) =>
+      metrics.map(([key], x) => [x, y, key.endsWith("_rate") ? (item[key] || 0) * 100 : item[key] || 0])
+    );
+    return {
+      tooltip: {
+        position: "top",
+        formatter: (params: any) => `${rows[params.value[1]][0]}<br/>${metrics[params.value[0]][1]}: ${params.value[2].toFixed(1)}%`,
+      },
+      grid: { left: 88, right: 18, top: 20, bottom: 34 },
+      xAxis: { type: "category", data: metrics.map((m) => m[1]), axisLabel: { color: "#8fb0be" }, axisLine: { show: false } },
+      yAxis: { type: "category", data: rows.map(([name]) => name), axisLabel: { color: "#8fb0be" }, axisLine: { show: false } },
+      visualMap: {
+        min: 0,
+        max: 100,
+        show: false,
+        inRange: { color: ["#14343c", "#1d6f6b", "#7ed957"] },
+      },
+      series: [{ type: "heatmap", data, label: { show: true, formatter: (p: any) => `${p.value[2].toFixed(0)}%`, color: "#f4fbfc" } }],
+    };
+  }, [summary]);
+
   useChart("predictionChart", predictionOption);
   useChart("actionChart", actionOption);
   useChart("rewardChart", rewardOption);
+  useChart("robustnessChart", robustnessOption);
 
   const latest = recommendations[recommendations.length - 1] || summary?.latest_recommendation;
   const byScenario = summary?.model.safe_marl_by_scenario || {};
@@ -272,7 +307,12 @@ function App() {
         <Kpi icon={<Database size={22} />} label="融合数据" value={fmt(summary?.kpis.fusion_rows, 0)} hint="本地 + 公开监测 + 外部适配" />
         <Kpi icon={<BrainCircuit size={22} />} label="决策样本" value={fmt(summary?.kpis.decision_rows, 0)} hint={`${fmt(summary?.model.feature_count, 0)} 个模型特征`} />
         <Kpi icon={<ShieldCheck size={22} />} label="安全可行率" value={pct(summary?.kpis.safe_marl_feasible_rate)} hint="RL 动作经过约束盾" />
-        <Kpi icon={<Bolt size={22} />} label="动态节能" value={`${fmt(summary?.kpis.dynamic_energy_saving_pct)}%`} hint={`${fmt(summary?.kpis.dynamic_mean_execution_sec)}s 平均控制耗时`} />
+        <Kpi
+          icon={<Bolt size={22} />}
+          label="定值对照节能"
+          value={`${fmt(summary?.kpis.fixed_energy_saving_pct)}%`}
+          hint={`PAC节药 ${fmt(summary?.kpis.fixed_chemical_saving_pct)}%，P95 ${fmt(summary?.kpis.recommend_response_p95_ms, 1)}ms`}
+        />
         <Kpi icon={<Gauge size={22} />} label="预测误差" value={fmt(summary?.kpis.stage2_test_weighted_mae, 3)} hint={`达标率 ${pct(summary?.kpis.stage2_compliance_rate)}`} />
       </section>
 
@@ -306,6 +346,7 @@ function App() {
       <section className="lowerGrid">
         <section className="panel">
           <header className="panelHeader"><Droplets size={18} /><h2>工况鲁棒性</h2></header>
+          <div id="robustnessChart" className="smallChart" />
           <div className="scenarioRows">
             {Object.entries(byScenario).map(([name, item]) => (
               <div className="scenarioRow" key={name}>

@@ -8,6 +8,7 @@
 - `scripts/train_stage2_model.py`：训练多输出出水水质代理模型并生成局部约束推荐。
 - `scripts/build_external_fusion_dataset.py`：融合本地、国内公开监测、WQP/Kaggle 适配数据。
 - `scripts/train_safe_marl.py`：训练轻量 PyTorch 双智能体策略，并通过安全盾生成推荐。
+- `scripts/evaluate_decision_benefits.py`：评估节能药耗收益、复杂工况鲁棒性和单组响应时间。
 - `wwtp_decision/`：Safe-MARL、安全盾、奖励函数、动作解释等共享逻辑。
 - `dashboard/backend/`：FastAPI 接口，提供摘要、时序、推荐、推理和报告 API。
 - `configs/`：排放阈值、控制边界、外部数据源和 Safe-MARL 配置。
@@ -20,6 +21,7 @@ python scripts/validate_stage1_outputs.py
 python scripts/train_stage2_model.py
 python scripts/build_external_fusion_dataset.py
 python scripts/train_safe_marl.py
+python scripts/evaluate_decision_benefits.py
 uvicorn dashboard.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
@@ -41,6 +43,7 @@ npm run dev
 python scripts/validate_stage1_outputs.py
 python scripts/build_external_fusion_dataset.py
 python scripts/train_safe_marl.py --epochs 40
+python scripts/evaluate_decision_benefits.py
 pytest
 cd dashboard/frontend
 npm run build

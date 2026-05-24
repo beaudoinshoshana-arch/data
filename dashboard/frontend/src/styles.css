@@ -173,6 +173,12 @@ h1 {
   height: 220px;
 }
 
+.smallChart {
+  width: 100%;
+  height: 190px;
+  margin-top: 8px;
+}
+
 .recommendBox {
   padding-top: 10px;
 }

@@ -13,9 +13,9 @@
   },
   "objective_weights": {
     "effluent_risk": 1.0,
-    "energy": 0.1,
-    "chemical": 0.12,
-    "smoothness": 0.06,
+    "energy": 0.3,
+    "chemical": 0.35,
+    "smoothness": 0.01,
     "constraint_violation": 6.0
   },
   "grid_offsets": {
